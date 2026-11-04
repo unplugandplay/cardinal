@@ -440,7 +440,22 @@ proc checkSpecs*(root: string; args: seq[string]): int =
   if failed: 1 else: 0
 
 proc specCoverage*(root: string; args: seq[string]): int =
-  echo "no spec citations found"
+  var missing = 0
+  for path in walkDirRec(root):
+    if path.contains("/.git/") or path.contains("/harness/") or path.contains("/nim/bin/"):
+      continue
+    let name = path.extractFilename
+    let isTest = name.endsWith("_test.nim") or name.endsWith("_test.rs") or
+                 path.contains("/tests/")
+    if not isTest:
+      continue
+    var text = ""
+    try: text = readFile(path) except CatchableError: continue
+    if not text.contains("spec:"):
+      echo path.relativePath(root)
+      inc missing
+  if missing == 0:
+    echo "every test file cites a spec"
   0
 
 proc fixedContext*(root: string; args: seq[string]): int =
