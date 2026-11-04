@@ -1,12 +1,15 @@
 # Tooling
 
-A project harness for agent-driven work: [Cardinal](https://github.com/Electron-libre/cardinal) supplies the
-skills, rules, gates and recipes; an OpenCode 2 adapter runs them outside Claude Code, with DeepSeek as the model.
+A project harness for agent-driven work: the prompt data in `harness/` (derived from
+[Cardinal](https://github.com/Electron-libre/cardinal)) plus a Nim CLI and a plain-JS OpenCode 2
+adapter. No Claude Code and no Rust; the model is any signed-in provider, chosen in `.env`.
 
 ## Quick start
 
 ```sh
-opencode            # in this directory: DeepSeek + the Cardinal skills are already configured
+nim c -d:release --hints:off -o:nim/bin/cardinal-nim nim/cardinal.nim
+install -m 755 nim/bin/cardinal-nim ~/.local/bin/cardinal
+opencode            # in this directory: the model from .env + the harness skills
 ```
 
 | Choice | Where |
@@ -19,7 +22,7 @@ opencode            # in this directory: DeepSeek + the Cardinal skills are alre
 | `issues/<name>.md` or "the next issue" | `issue-workflow` drives it to done in validated deliverables |
 | "Create an issue: …" | `create-issue` writes `issues/<name>.md` |
 | "Prioritize the issues" | `prioritize-issues` reviews order and dependencies |
-| `just next-issue` | not ported yet — pick `issues/<name>.md` manually |
+| `just next-issue` | shows the first ready issue, blocked ones and their problems |
 
 ## Layout
 
@@ -28,11 +31,13 @@ opencode            # in this directory: DeepSeek + the Cardinal skills are alre
 | `.claude/` | Cardinal's managed files: 8 skills, 3 rules, `cardinal.toml`, `cardinal.lock`, `settings.json` |
 | `harness/` | prompt data (`files/`, `seed/`, `entries/`) and its MIT license; no Rust |
 | `.opencode/plugins/cardinal/` | plain-JS adapter calling the Nim CLI: maps OpenCode hooks onto the gates ([README](.opencode/plugins/cardinal/README.md)) |
-| `nim/` | the Nim CLI: sync/check, the gates, `session-metrics`, `update` |
+| `nim/` | the Nim CLI: sync/check, gates, workflow helpers, `session-metrics`, `update` |
 | `opencode.jsonc` | skills and instructions sources, waiver denies (no model — see `.env`) |
 | `.env` | `OPENCODE_MODEL=<provider>/<model>` — the single place the model and provider are chosen |
 | `AGENTS.md`, `cardinal*.just`, `justfile`, `specs/` | Cardinal's managed harness, synced |
 | `ROADMAP.md`, `CHANGELOG.md` | seeded by Cardinal, owned by the project |
+| `demo/` | hello-world project + `run.sh`: 43 end-to-end checks, logs in `demo/logs/` |
+| `TLDR;/` | one-page quick start for people who will not read this file |
 | `docs/discovery/` | design notes and comparisons |
 
 ## Cardinal commands

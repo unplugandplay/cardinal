@@ -9,9 +9,10 @@ Decisions, evidence and dead ends, newest first. One entry per working session.
 | `demo/hello-world` | two files: `hello.nim` and the harness config |
 | `demo/run.sh` | copies it to a temp dir, syncs, runs every gate and helper, asserts 43 outcomes |
 | Last run | **43 passed, 0 failed** |
-| Logs | `demo/logs/`, sanitized (`<repo>`, `<tmp>`, `~`) |
+| Logs | `demo/logs/`, sanitized (`<repo>`, `<tmp>`, `~`); the resolved `/private/var` paths removed in `50bde08` |
 | `TLDR;` | one-page quick start, model, gates, links |
 | CI | the demo runs on every push and pull request |
+| Final state | `50bde08` on `origin/main`, 43/43 green |
 
 ## 2026-11-04 — Nim phase 5c: workflow helpers
 
