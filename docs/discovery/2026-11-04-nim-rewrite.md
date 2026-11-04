@@ -70,9 +70,9 @@ Two structural simplifications:
 | 3 | Plain-JS adapter calling the Nim CLI | **done 2026-11-04** — `index.js`, neutral events, `language-hint` ported |
 | 2b | Sync completeness | **done 2026-11-04** — entries merged, review hook installed, Rust `check` accepts the result |
 | 4 | Port issue queue / release or replace with recipes | **done 2026-11-04** for metrics + update; issue queue/release remain recipes |
-| 5 | Remove Rust and TypeScript from the tree | next |
+| 5 | Remove Rust and TypeScript from the tree | **in progress** — hook, CI and installed binary on Nim; Rust source tree still vendored |
 
-Keep the Rust binary installed until phase 5; run the Nim binary beside it and diff verdicts.
+The Rust binary is gone; the Rust source tree stays as reference until the Phase 5 restructure.
 Effort: 3–4 weeks including parity tests; phases 1–2 are the
 bulk.
 

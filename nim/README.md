@@ -58,8 +58,7 @@ No dependencies: SHA-256 is vendored in `sha256.nim` and tested against the stan
 | git-URL `update` (fetch/clone) | 2b |
 | legacy measurement readers (`rule-breaches`, `delivered-quality`, `cardinal-report`, `cardinal-changes`, `audit-sources`, `fixed-context`) | optional |
 
-`sync` now merges the settings entries and installs the native review hook; the Rust binary
-accepts a project synced by `cardinal-nim` (`cardinal check` exits 0), with identical entry lines,
-settings and hook. `session-metrics` produces the same rows as Rust; `update` syncs the local
-source. The installed Rust binary is only the native hook binary now; phase 5 installs the Nim
-binary as `cardinal`.
+`sync` now merges the settings entries and installs the native review hook; the hook prefers
+`./nim/bin/cardinal-nim`, then `cardinal-nim`, then `cardinal`, so no Rust is needed. `session-metrics`
+produces the same rows as Rust; `update` syncs the local source. Remaining: the Rust source tree
+(prompt data + crates) and the legacy measurement readers.

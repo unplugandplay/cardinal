@@ -30,16 +30,28 @@ const HookScript = """#!/bin/sh
 legacy=.claude/hooks/require_code_review.rs
 if [ -f "$legacy" ] && command -v rust-script >/dev/null 2>&1; then
     rust-script "$legacy" native || exit $?
-elif [ ! -f "$legacy" ] && [ -f .claude/cardinal.toml ] && cardinal help run >/dev/null 2>&1; then
-    cardinal run review-gate native
-    code=$?
-    if [ "$code" -eq 3 ]; then
-        echo "cardinal: review gate skipped, cardinal could not run it" >&2
-    elif [ "$code" -ne 0 ]; then
-        exit "$code"
+elif [ ! -f "$legacy" ] && [ -f .claude/cardinal.toml ]; then
+    bin=
+    if [ -x ./nim/bin/cardinal-nim ]; then
+        bin=./nim/bin/cardinal-nim
+    elif command -v cardinal-nim >/dev/null 2>&1; then
+        bin=cardinal-nim
+    elif command -v cardinal >/dev/null 2>&1; then
+        bin=cardinal
+    fi
+    if [ -z "$bin" ]; then
+        echo "cardinal: review gate skipped, cardinal-nim and cardinal are missing" >&2
+    else
+        "$bin" run review-gate native
+        code=$?
+        if [ "$code" -eq 3 ]; then
+            echo "cardinal: review gate skipped, it could not run it" >&2
+        elif [ "$code" -ne 0 ]; then
+            exit "$code"
+        fi
     fi
 else
-    echo "cardinal: review gate skipped, its hook or the program to run it (rust-script, or cardinal) is missing" >&2
+    echo "cardinal: review gate skipped, its hook or the program to run it is missing" >&2
 fi
 case "$0" in */*) dir="${0%/*}" ;; *) dir=. ;; esac
 user="$dir/pre-commit.user"

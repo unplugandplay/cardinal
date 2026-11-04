@@ -2,6 +2,16 @@
 
 Decisions, evidence and dead ends, newest first. One entry per working session.
 
+## 2026-11-04 — Nim phase 5a: hook, CI, Rust binary removed
+
+| Change | Detail |
+| --- | --- |
+| Review hook | prefers `./nim/bin/cardinal-nim`, then `cardinal-nim`, then `cardinal`; verified with the Rust binary deleted |
+| Installed CLI | `~/.local/bin/cardinal-nim` (on PATH) |
+| CI | builds `cardinal-nim` with Nim 2.2.12, runs `cardinal-nim check`; `install_cardinal.sh` removed |
+| Rust binary | `~/.cargo/bin/cardinal` deleted; the hook still refuses a dirty tree via Nim |
+| Remaining | Rust source tree (prompt data + crates) to restructure under `harness/`; legacy readers; specs/commit recipes in CI |
+
 ## 2026-11-04 — Nim phase 4: metrics and update
 
 | Piece | Result |

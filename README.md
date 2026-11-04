@@ -75,11 +75,14 @@ recorded; the native pre-commit gate still refuses un-reviewed commits.
 
 | Tool | Install |
 | --- | --- |
-| Nim CLI | `nim c -d:release --hints:off -o:nim/bin/cardinal-nim nim/cardinal.nim` |
-| Rust `cardinal` | only the native hook binary until phase 5; the CLI itself is Nim |
+| Nim CLI | `nim c -d:release --hints:off -o:nim/bin/cardinal-nim nim/cardinal.nim`, then `install -m 755 nim/bin/cardinal-nim ~/.local/bin/cardinal-nim` |
 | `just` | `brew install just` |
 | git | 2.23+ (portable `rev-parse`; tested on 2.23 and 2.56) |
 | OpenCode | 2.2.4+ with a signed-in provider of your choice |
+
+No Rust is needed: `sync`, `check`, the gates, `session-metrics`, `update`, the review hook and CI
+all run the Nim CLI. The vendored `cardinal/` tree still holds the Rust crates as reference and the
+prompt source (`files/`, `seed/`, `entries/`) until the Phase 5 restructure.
 
 Remote: `https://github.com/unplugandplay/cardinal` — `main` is the default branch.
 
