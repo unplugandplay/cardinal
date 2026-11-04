@@ -2,6 +2,24 @@
 
 Decisions, evidence and dead ends, newest first. One entry per working session.
 
+## 2026-11-04 — Nim phase 2: gates
+
+| Gate | Parity with Rust |
+| --- | --- |
+| `review-gate check` | 6/6 commands: identical exit code and messages |
+| `review-gate native` | no marker 2, covered 0, unseen file 2, waiver 0 — both |
+| `review-gate record` | Rust marker accepted by Nim, and the reverse |
+| `lint-gate` | failing command 2, passing 0 — both; same diagnostics header |
+| `read-hint` | identical deny JSON and 38,700-byte estimate; record dir cross-compatible |
+| `workspace-lock` | Rust lock + Nim check and Nim lock + Rust check both refuse; release works |
+| `format-code` | same formatter invocation; not separately exercised |
+
+Bugs found and fixed while porting: a nil `JsonNode` on a missing `offset`/`limit` (segfault), and
+the trailing empty line inflating the read estimate by 8 bytes.
+
+Deferred: `language-hint` (word lists), settings entries generation, review-hook install,
+migrations, features, `--rev`. Details: `nim/README.md`.
+
 ## 2026-11-04 — Nim phase 1: sync and check
 
 | Item | Result |

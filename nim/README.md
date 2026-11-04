@@ -1,7 +1,7 @@
-# Cardinal in Nim — phase 1
+# Cardinal in Nim — phases 1–2
 
-The first slice of the Rust → Nim port: `sync` and `check` with the same layout, lock
-format and exit codes.
+`sync`/`check` and the gates, with the same layout, lock format, stdin contract and exit codes
+(0 pass, 2 refusal, 3 tool/usage error).
 
 ## Build and test
 
@@ -20,25 +20,41 @@ No dependencies: SHA-256 is vendored in `sha256.nim` and tested against the stan
 | `cardinal-nim sync` | copies `source/files/` (managed), seeds `source/seed/` once, rewrites the lock |
 | `cardinal-nim sync --dry-run` | prints the plan, writes nothing |
 | `cardinal-nim sync --force` | overwrites local edits of managed files |
+| `cardinal-nim run <tool> [args]` | a gate, reading the event JSON on stdin |
+
+## Gates
+
+| Tool | Modes | Ported |
+| --- | --- | --- |
+| `review-gate` | `check`, `record`, `native` | yes — snapshot, marker, waiver, hook-skip refusal |
+| `lint-gate` | — | yes — declared command or clippy, stamp, diagnostics |
+| `read-hint` | — | yes — size estimate, once per session/file |
+| `workspace-lock` | `check`, `start`, `release` | yes — lock file, liveness, dirty-tree check |
+| `format-code` | — | yes — declared formatter or `cargo fmt` |
+| `language-hint` | — | **no** — needs the language word lists |
 
 ## Parity with the Rust binary (2026-11-04)
 
 | Test | Result |
 | --- | --- |
-| `check` on the synced project | exit 0, every one of the 41 lock hashes matches |
-| drift a managed file | both binaries exit 1 and name the file |
-| delete a managed file | both exit 1 and report it missing |
-| fresh project `sync` | identical file tree; identical lock file lines |
-| SHA-256 | empty, `abc` and the quick-brown-fox vector match |
+| `check` on the synced project | exit 0; all 41 lock hashes match |
+| Drift / missing managed file | both exit 1 and name the file |
+| Fresh project `sync` | identical file tree; identical lock file lines |
+| `review-gate check` | 6/6 commands: identical exit code and messages |
+| `review-gate native` | no marker 2, covered 0, unseen file 2, waiver 0 — both |
+| `lint-gate` | failing command 2, passing 0 — both |
+| `read-hint` | identical deny JSON and byte estimate |
+| `workspace-lock` | locks are cross-compatible: Rust lock + Nim check, Nim lock + Rust check both refuse |
+| SHA-256 | empty, `abc`, quick-brown-fox vectors pass |
 
-## Not in phase 1
+## Not yet in Nim
 
 | Gap | Phase |
 | --- | --- |
-| settings entries (15 `entry` lines) are preserved but not generated | 2 |
-| review-gate git hook install, migrations, features, `--rev` | 2 |
-| gates (`run` tools): review, lint, read, lock, language, format | 2 |
+| settings entries (15 `entry` lines) preserved but not generated | 2b |
+| `language-hint` | 2b |
+| review-gate git hook install, migrations, features, `--rev` | 2b |
 | issue queue, release, worktrees, transcripts | 3+ |
 
-The Rust `cardinal` stays the installed binary until phase 2 reaches parity; `cardinal-nim`
-runs beside it for diffing.
+The Rust `cardinal` stays the installed binary until the gap closes; `cardinal-nim` runs beside it
+for diffing.

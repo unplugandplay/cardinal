@@ -66,7 +66,8 @@ Two structural simplifications:
 | Phase | Deliverable | Status |
 | --- | --- | --- |
 | 1 | Nim `sync`/`check` + manifest, same prompts | **done 2026-11-04** — tree and lock lines match; `nim/README.md` |
-| 2 | Nim gates: review, lint, read, lock | next |
+| 2 | Nim gates: review, lint, read, lock | **done 2026-11-04** — parity table in `nim/README.md`; `language-hint` deferred |
+| 3 | Plain-JS adapter calling the Nim CLI | next |
 | 3 | Plain-JS adapter calling the Nim CLI | planned |
 | 4 | Port issue queue / release or replace with recipes | planned |
 | 5 | Remove Rust and TypeScript from the tree | planned |

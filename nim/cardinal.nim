@@ -7,9 +7,9 @@
 ##
 ## Build: nim c -d:release -o:nim/bin/cardinal-nim nim/cardinal.nim
 
-import std/[algorithm, os, strutils, tables]
+import std/[algorithm, os, streams, strutils, tables]
 
-import sha256
+import config, gates, sha256
 
 const
   ConfigPath = ".claude/cardinal.toml"
@@ -20,13 +20,10 @@ const
 usage:
   cardinal-nim check            fail when a managed copy drifted
   cardinal-nim sync [--dry-run] [--force]
+  cardinal-nim run <tool> [args]  a gate, reading the event on stdin
   cardinal-nim --version"""
 
 type
-  Config = object
-    source: string
-    rev: string
-
   Lock = object
     format: int
     files: OrderedTable[string, string] # project path -> hash, `+x` when executable
@@ -40,34 +37,6 @@ proc die(message: string) =
   quit(1)
 
 proc slash(path: string): string = path.replace('\\', '/')
-
-proc readConfig(root: string): Config =
-  let path = root / ConfigPath
-  if not fileExists(path):
-    die("no " & ConfigPath & " in " & root)
-  var section = ""
-  for raw in lines(path):
-    let line = raw.strip()
-    if line.len == 0 or line.startsWith("#"):
-      continue
-    if line.startsWith("[") and line.endsWith("]"):
-      section = line[1 .. ^2].strip()
-      continue
-    if section != "cardinal":
-      continue
-    let eq = line.find('=')
-    if eq < 0:
-      continue
-    let key = line[0 ..< eq].strip()
-    var value = line[eq + 1 .. ^1].strip()
-    if value.len >= 2 and value[0] == '"' and value[^1] == '"':
-      value = value[1 .. ^2]
-    case key
-    of "source": result.source = value
-    of "rev": result.rev = value
-    else: discard
-  if result.source.len == 0:
-    die("no source in " & ConfigPath)
 
 proc readLock(root: string): Lock =
   let path = root / LockPath
@@ -132,7 +101,9 @@ proc copyManaged(source, root, rel: string) =
   copyFileWithPermissions(src, to)
 
 proc cmdCheck(root: string) =
-  let config = readConfig(root)
+  let config = readSource(root)
+  if config.source.len == 0:
+    die("no source in " & ConfigPath)
   let lock = readLock(root)
   if lock.format == 0:
     die("no " & LockPath & ": run cardinal sync")
@@ -151,7 +122,9 @@ proc cmdCheck(root: string) =
     quit(1)
 
 proc cmdSync(root: string, dryRun, force: bool) =
-  let config = readConfig(root)
+  let config = readSource(root)
+  if config.source.len == 0:
+    die("no source in " & ConfigPath)
   let source = (if config.source.isAbsolute: config.source else: root / config.source).absolutePath
   if not dirExists(source / "files"):
     die("no files/ in source " & source)
@@ -240,6 +213,11 @@ when isMainModule:
   case args[0]
   of "check":
     cmdCheck(root)
+  of "run":
+    if args.len < 2:
+      die("usage: cardinal-nim run <tool> [args]")
+    let input = readAll(stdin)
+    quit(runTool(root, args[1], (if args.len > 2: args[2 .. ^1] else: @[]), input))
   of "sync":
     var dryRun = false
     var force = false
