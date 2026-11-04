@@ -279,10 +279,12 @@ pub fn repository(cwd: &str, branches: &[String]) -> Option<PathBuf> {
             .take_while(|a| !a.exists())
             .find_map(|gone| sibling(gone, branches));
     }
-    let common = PathBuf::from(git(
-        dir,
-        &["rev-parse", "--path-format=absolute", "--git-common-dir"],
-    )?);
+    let common = PathBuf::from(git(dir, &["rev-parse", "--git-common-dir"])?);
+    let common = if common.is_absolute() {
+        common
+    } else {
+        dir.join(common)
+    };
     if common.file_name().is_some_and(|n| n == ".git") {
         common.parent().map(Path::to_path_buf)
     } else {

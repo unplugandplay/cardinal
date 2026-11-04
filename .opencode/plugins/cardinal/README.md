@@ -9,7 +9,7 @@ event from OpenCode's hooks and applies the verdict. Nothing here needs Claude C
 | | |
 | --- | --- |
 | `cardinal` | on the server's `PATH`, or set `CARDINAL_BIN=/abs/path/to/cardinal` |
-| git | 2.31+ (Cardinal reads `--path-format`); the adapter prefers `/opt/homebrew/bin/git` |
+| git | 2.23+ (portable `rev-parse`; the adapter still prefers `/opt/homebrew/bin/git` when present) |
 | `cardinal sync` | run once in the project (the git `pre-commit` review gate is installed by it) |
 | Config | `skills: [".claude/skills"]`, `instructions: [".claude/rules/*.md"]` in `opencode.jsonc` |
 

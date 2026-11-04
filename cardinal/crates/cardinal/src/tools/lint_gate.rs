@@ -139,18 +139,15 @@ pub(super) fn main(_args: &[String]) -> u8 {
     if files.is_empty() {
         return 0;
     }
-    let stamp = git(
-        &dir,
-        &[
-            "rev-parse",
-            "--path-format=absolute",
-            "--git-path",
-            "claude-lint-pass",
-        ],
-    );
+    let stamp = git(&dir, &["rev-parse", "--git-path", "claude-lint-pass"]);
     let stamp = stamp.trim();
+    let stamp = if stamp.is_empty() || Path::new(stamp).is_absolute() {
+        stamp.to_string()
+    } else {
+        Path::new(&dir).join(stamp).to_string_lossy().into_owned()
+    };
     let state = lint_state(&dir, &lint, &files);
-    if !stamp.is_empty() && std::fs::read_to_string(stamp).is_ok_and(|s| s == state) {
+    if !stamp.is_empty() && std::fs::read_to_string(&stamp).is_ok_and(|s| s == state) {
         return 0;
     }
     let passed = match &lint.command {
@@ -163,7 +160,7 @@ pub(super) fn main(_args: &[String]) -> u8 {
     if !stamp.is_empty() {
         // the state as the lint left it: a lint that fixes files must not run again for its own fix
         let state = lint_state(&dir, &lint, &changed_files(&dir, &lint));
-        let _ = std::fs::write(stamp, state);
+        let _ = std::fs::write(&stamp, state);
     }
     0
 }

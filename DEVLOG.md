@@ -2,6 +2,17 @@
 
 Decisions, evidence and dead ends, newest first. One entry per working session.
 
+## 2026-11-04 — git 2.31 requirement removed
+
+| Change | Detail |
+| --- | --- |
+| Portable paths | five source files and one test use `rev-parse --git-path` / `--git-common-dir`, resolving relative results themselves |
+| Waiver recipe | `cardinal-review.just` uses `--git-path` and truncates with `: >` instead of `touch`, so repeated waivers work |
+| Tests | `workspace_lock` 14, `lint_gate` 8, `close_issue` 12, `deliverable_size` 1 — all pass |
+| Old git | verified with git 2.23: lock start/check refuse, waiver path resolves and truncates |
+| Remaining caveat | Rust test fixtures still use `git init -b` (2.28+); the product does not |
+| Next | `docs/discovery/2026-11-04-nim-rewrite.md`: prompts + one Nim CLI + plain-JS shim, Claude-shaped contract removed |
+
 ## 2026-11-04 — Claude-free bridges
 
 | Bridge | Implementation | Verified |

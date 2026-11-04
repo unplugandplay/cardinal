@@ -45,17 +45,17 @@ impl Holder {
 /// The path of the lock of the worktree of `cwd` (WSL-9: per worktree).
 fn lock_path(cwd: &Path) -> Option<PathBuf> {
     let out = Command::new("git")
-        .args([
-            "rev-parse",
-            "--path-format=absolute",
-            "--git-path",
-            "cardinal-session",
-        ])
+        .args(["rev-parse", "--git-path", "cardinal-session"])
         .current_dir(cwd)
         .output()
         .ok()
         .filter(|o| o.status.success())?;
-    Some(PathBuf::from(String::from_utf8_lossy(&out.stdout).trim()))
+    let path = PathBuf::from(String::from_utf8_lossy(&out.stdout).trim());
+    Some(if path.is_absolute() {
+        path
+    } else {
+        cwd.join(path)
+    })
 }
 
 fn read(path: &Path) -> Option<Holder> {

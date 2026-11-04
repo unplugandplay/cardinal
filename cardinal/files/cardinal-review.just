@@ -4,6 +4,6 @@
 waive-review:
     #!/usr/bin/env sh
     set -e
-    waiver=$(git rev-parse --path-format=absolute --git-path claude-review-waived)
-    touch "$waiver"
+    waiver=$(git rev-parse --git-path claude-review-waived)
+    : > "$waiver"
     echo "$waiver"

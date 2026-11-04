@@ -76,7 +76,7 @@ recorded; the native pre-commit gate still refuses un-reviewed commits.
 | --- | --- |
 | `cardinal` | `cargo install --force --path cardinal/crates/cardinal --locked` |
 | `just` | `brew install just` |
-| git | 2.31+ (Cardinal uses `--path-format`); the adapter prefers `/opt/homebrew/bin/git` |
+| git | 2.23+ (portable `rev-parse`; tested on 2.23 and 2.56) |
 | OpenCode | 2.2.4+ with a signed-in provider of your choice |
 
 Remote: `https://github.com/unplugandplay/cardinal` — `main` is the default branch.

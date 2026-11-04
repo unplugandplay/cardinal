@@ -128,13 +128,13 @@ fn diff_args(target: &str) -> [&str; 7] {
 /// The diff of the working tree against `rev`, the untracked files included as new ones: they are marked
 /// intent-to-add in a copy of the index, removed after, so the index of the repository is untouched (SIZ-11).
 fn working_tree_diff(root: &Path, rev: &str) -> Result<Vec<u8>, String> {
-    let index = git(
-        root,
-        &["rev-parse", "--path-format=absolute", "--git-path", "index"],
-        None,
-        None,
-    )?;
+    let index = git(root, &["rev-parse", "--git-path", "index"], None, None)?;
     let index = PathBuf::from(String::from_utf8_lossy(&index).trim());
+    let index = if index.is_absolute() {
+        index
+    } else {
+        root.join(index)
+    };
     let copy = TempIndex(index.with_extension(format!("cardinal-size-{}", std::process::id())));
     if index.exists() {
         std::fs::copy(&index, &copy.0)

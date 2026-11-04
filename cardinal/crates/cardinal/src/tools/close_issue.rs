@@ -610,12 +610,18 @@ fn repo_root(dir: &Path) -> Option<std::path::PathBuf> {
 /// The git common directory of the repository of `dir` and the top of its worktree, canonical.
 fn worktree_of(dir: &Path) -> Option<(std::path::PathBuf, std::path::PathBuf)> {
     let out = Command::new("git")
-        .args(["rev-parse", "--path-format=absolute", "--git-common-dir"])
+        .args(["rev-parse", "--git-common-dir"])
         .current_dir(dir)
         .output()
         .ok()
         .filter(|o| o.status.success())?;
-    let common = std::fs::canonicalize(String::from_utf8_lossy(&out.stdout).trim()).ok()?;
+    let common = std::path::PathBuf::from(String::from_utf8_lossy(&out.stdout).trim());
+    let common = if common.is_absolute() {
+        common
+    } else {
+        dir.join(common)
+    };
+    let common = std::fs::canonicalize(common).ok()?;
     Some((common, std::fs::canonicalize(repo_root(dir)?).ok()?))
 }
 

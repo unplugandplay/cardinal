@@ -96,15 +96,12 @@ fn hook(mode: &str, cwd: &Path, session: &str, pid: &str) -> Out {
 
 /// The lock of the worktree of `dir`, empty when there is none.
 fn lock(dir: &Path) -> String {
-    let path = git(
-        dir,
-        &[
-            "rev-parse",
-            "--path-format=absolute",
-            "--git-path",
-            "cardinal-session",
-        ],
-    );
+    let path = PathBuf::from(git(dir, &["rev-parse", "--git-path", "cardinal-session"]));
+    let path = if path.is_absolute() {
+        path
+    } else {
+        dir.join(path)
+    };
     std::fs::read_to_string(path).unwrap_or_default()
 }
 
