@@ -1,40 +1,44 @@
 # Cardinal ↔ OpenCode 2 adapter
 
-Runs Cardinal's gates around an OpenCode + DeepSeek session. Cardinal's gate commands are
-harness-agnostic CLI tools that expect a Claude Code hook event on stdin; this plugin builds that
-event from OpenCode's hooks and applies the verdict. Nothing here needs Claude Code installed.
+Plain JavaScript (`index.js`), no build, no dependencies. It sends a neutral event to the Nim CLI:
+
+```json
+{ "action": "read", "input": { "file_path": "…" }, "session": "ses_…", "cwd": "…" }
+```
+
+and applies the answer: `0` pass, `2` refusal (the message is shown to the model), `3` tool error.
 
 ## Requirements
 
 | | |
 | --- | --- |
-| `cardinal` | on the server's `PATH`, or set `CARDINAL_BIN=/abs/path/to/cardinal` |
-| git | 2.23+ (portable `rev-parse`; the adapter still prefers `/opt/homebrew/bin/git` when present) |
-| `cardinal sync` | run once in the project (the git `pre-commit` review gate is installed by it) |
+| Nim CLI | `nim/bin/cardinal-nim` (built with `nim c -d:release -o:nim/bin/cardinal-nim nim/cardinal.nim`), or set `CARDINAL_BIN` |
+| git | 2.23+ (any recent git); the adapter prefers `/opt/homebrew/bin/git` when present |
 | Config | `skills: [".claude/skills"]`, `instructions: [".claude/rules/*.md"]` in `opencode.jsonc` |
+| Sync | `cardinal-nim sync` (or the Rust `cardinal`) once, for the managed files |
+
+Binary lookup order: `CARDINAL_BIN`, `<project>/nim/bin/cardinal-nim`, `~/.local/bin/cardinal-nim`,
+then `cardinal-nim` on the server's `PATH`.
 
 ## Wiring
 
-| OpenCode hook | Cardinal tool | Effect |
-| --- | --- | --- |
-| plugin setup · `.env` | — | pins the default model from `OPENCODE_MODEL=<provider>/<model>` |
-| `permission.evaluate` · `shell`/`edit` | `workspace-lock check` | denies a second live session in the same worktree |
-| `permission.evaluate` · `shell` | `review-gate check` | denies `--no-verify`, `core.hooksPath`, `git add` of every file |
-| `permission.evaluate` · `read` | `read-hint` | denies an oversized whole read once per file and session |
-| `tool.execute.after` · `edit`/`write` | `format-code` | formats the edited file with the project's formatter |
-| `tool.execute.after` · `skill` | `review-gate record` | records a finished `code-review` skill run |
-| session created/deleted | `workspace-lock start`/`release` | takes and frees the worktree lock |
-| `session.experimental.idle` | `lint-gate` + `language-hint` | injects their output once so the agent fixes it |
-| `session.experimental.idle` | transcript mirror | writes `~/.local/share/cardinal/projects/<slug>/<session>.jsonl` |
+| OpenCode hook | Event `action` | Nim tool | Effect |
+| --- | --- | --- | --- |
+| plugin setup · `.env` | — | — | pins `OPENCODE_MODEL=<provider>/<model>` |
+| `permission.evaluate` · `shell`/`edit` | `lock` | `workspace-lock check` | denies a second live session in the worktree |
+| `permission.evaluate` · `shell` | `shell` | `review-gate check` | denies `--no-verify`, `core.hooksPath`, `git add` of every file |
+| `permission.evaluate` · `read` | `read` | `read-hint` | denies an oversized whole read once per file and session |
+| `tool.execute.after` · `edit`/`write` | `format` | `format-code` | formats the edited file |
+| `tool.execute.after` · `skill` | `skill` | `review-gate record` | records a finished `code-review` skill run |
+| session created / deleted | `start` / `stop` | `workspace-lock start`/`release` | takes and frees the worktree lock |
+| `session.experimental.idle` | `idle` | `lint-gate`, `language-hint` | injects their output once per turn |
+| `session.experimental.idle` | — | transcript mirror | writes `~/.local/share/cardinal/projects/<slug>/<session>.jsonl` |
 
 The per-session liveness PID is a small `sh` loop owned by the plugin; it exits within a minute of
-the server. The transcript mirror carries ids, models and real token usage, so
-`cardinal run session-metrics ~/.local/share/cardinal/projects` works.
+the server. The mirror carries ids, models and real token usage, so
+`cardinal-nim run session-metrics …` works once that tool is ported (Rust `cardinal` today).
 
-After editing `.env`, reload the adapter: touch `index.ts` (hot reload) or `opencode service restart`.
-
-The lint nudge is reset by each new user prompt, mirroring Cardinal's `stop_hook_active` retry
-limit.
+After editing `.env`, reload the adapter: touch `index.js` (hot reload) or `opencode service restart`.
 
 ## Known gaps
 
@@ -42,3 +46,5 @@ limit.
 | --- | --- |
 | `code-review` skill | the review gate records it when run; that skill is not part of Cardinal's 8 skills, so nothing records a review yet (the native pre-commit gate still refuses un-reviewed commits) |
 | Non-interactive deny | `opencode run` ends the run on a shell denial (`permission.rejected`) instead of handing the reason back; the TUI continues |
+| Settings entries | `cardinal-nim sync` preserves them but does not generate them yet |
+| Evaluation tools | `session-metrics`, `rule-breaches`, … are still Rust-only |

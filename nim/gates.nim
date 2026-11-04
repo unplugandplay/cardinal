@@ -10,6 +10,17 @@ import std/[algorithm, json, os, osproc, posix, sequtils, streams, strutils, tab
 import config, sha256
 
 const
+  FrenchWords = [
+    "le", "la", "les", "un", "une", "des", "du", "de", "et", "est", "que", "qui", "dans", "pour",
+    "pas", "sur", "avec", "ce", "cette", "il", "elle", "je", "tu", "nous", "vous", "au", "aux",
+    "ou", "mais", "par", "sont", "fait", "sans", "comme", "se", "ne", "en", "donc", "puis",
+  ]
+  EnglishWords = [
+    "the", "and", "is", "are", "that", "which", "in", "for", "not", "with", "this", "it", "i",
+    "you", "we", "of", "to", "be", "by", "was", "but", "at", "from", "have", "has", "so", "then",
+    "will", "can",
+  ]
+  MinWords = 20
   EmptyTree = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
   ReviewMarker = "claude-code-review.json"
   ReviewWaiver = "claude-review-waived"
@@ -447,12 +458,106 @@ proc formatCode(event: JsonNode): int =
     discard execCapture("cargo", @["fmt", "--all"], dir, "")
   0
 
+proc proseWords(text: string): seq[string] =
+  var prose = ""
+  var fenced = false
+  for line in text.splitLines:
+    if line.strip.startsWith("```"):
+      fenced = not fenced
+      continue
+    if fenced:
+      continue
+    let parts = line.split('`')
+    var index = 0
+    while index < parts.len:
+      prose.add(parts[index])
+      prose.add(" ")
+      index += 2
+    prose.add("\n")
+  var word = ""
+  for letter in prose:
+    if letter.isAlphaAscii:
+      word.add(letter.toLowerAscii)
+    elif word.len > 0:
+      result.add(word)
+      word = ""
+  if word.len > 0:
+    result.add(word)
+
+proc languageHint(event: JsonNode): int =
+  if event{"hook_event_name"}.getStr("") != "Stop":
+    return 0
+  if event{"stop_hook_active"}.getBool(false):
+    return 0
+  let cwd = block:
+    let fromEvent = event{"cwd"}.getStr("")
+    if fromEvent.len > 0: fromEvent else: getEnv("CLAUDE_PROJECT_DIR", ".")
+  let root = findProjectRoot(cwd)
+  if root.len == 0:
+    return 0
+  let name = readProject(root).userLanguage.strip.toLowerAscii
+  var own: seq[string]
+  var other: seq[string]
+  var display = ""
+  case name
+  of "french": own = @FrenchWords; other = @EnglishWords; display = "French"
+  of "english": own = @EnglishWords; other = @FrenchWords; display = "English"
+  else: return 0
+  let text = event{"last_assistant_message"}.getStr("")
+  if text.len == 0:
+    return 0
+  let words = proseWords(text)
+  if words.len < MinWords:
+    return 0
+  var mine = 0
+  var theirs = 0
+  for word in words:
+    if word in own: inc mine
+    if word in other: inc theirs
+  if theirs <= mine:
+    return 0
+  stderr.writeLine("Your last reply is not in " & display &
+    ", the user_language of .claude/cardinal.toml (or of .claude/cardinal.local.toml, which overrides it): " &
+    "give it again in " & display & ".")
+  2
+
+## A neutral event from the adapter: {action, tool, input, session, cwd,
+## stop_active, last_message, success}. Legacy Claude-shaped events pass through.
+proc normalize(event: JsonNode): JsonNode =
+  if not event.hasKey("action"):
+    return event
+  result = newJObject()
+  if event.hasKey("cwd"): result["cwd"] = event{"cwd"}
+  if event.hasKey("session"): result["session_id"] = event{"session"}
+  if event.hasKey("stop_active"): result["stop_hook_active"] = event{"stop_active"}
+  if event.hasKey("last_message"): result["last_assistant_message"] = event{"last_message"}
+  if event.hasKey("input"): result["tool_input"] = event{"input"}
+  if event.hasKey("success"):
+    result["tool_response"] = %*{"success": event{"success"}.getBool(false)}
+  case event{"action"}.getStr("")
+  of "shell":
+    result["hook_event_name"] = %"PreToolUse"
+    result["tool_name"] = %"Bash"
+  of "read":
+    result["hook_event_name"] = %"PreToolUse"
+    result["tool_name"] = %"Read"
+  of "skill":
+    result["hook_event_name"] = %"PostToolUse"
+    result["tool_name"] = %"Skill"
+  of "format":
+    result["hook_event_name"] = %"PostToolUse"
+    result["tool_name"] = %"Edit"
+  of "idle":
+    result["hook_event_name"] = %"Stop"
+  else: discard
+
 proc runTool*(root, tool: string; args: seq[string]; input: string): int =
   var event: JsonNode
   try:
     event = parseJson(input)
   except CatchableError, ValueError:
     event = newJObject()
+  event = normalize(event)
   let cwd = block:
     let fromEvent = event{"cwd"}.getStr("")
     if fromEvent.len > 0: fromEvent else: root
@@ -468,6 +573,7 @@ proc runTool*(root, tool: string; args: seq[string]; input: string): int =
   of "read-hint": readHint(event)
   of "workspace-lock": workspaceLock(args, event)
   of "format-code": formatCode(event)
+  of "language-hint": languageHint(event)
   else:
     stderr.writeLine("cardinal-nim: unknown tool " & tool)
     3

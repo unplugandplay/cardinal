@@ -2,6 +2,20 @@
 
 Decisions, evidence and dead ends, newest first. One entry per working session.
 
+## 2026-11-04 — Nim phase 3: plain-JS adapter
+
+| Change | Detail |
+| --- | --- |
+| Adapter | `index.ts` removed; `index.js` plain ESM, no build, no dependencies |
+| Protocol | neutral event `{action, input, session, cwd, stop_active, last_message, success}`; the Nim CLI normalizes it, legacy Claude-shaped events still pass |
+| Binary | `CARDINAL_BIN`, then `<project>/nim/bin/cardinal-nim`, then `~/.local/bin`, then `PATH` |
+| `language-hint` | ported to Nim (French/English stop words) — parity 2/0 and identical messages |
+| Verified live | read-hint deny + retry (Nim), review-gate `--no-verify` refusal (Nim), workspace-lock, model pinning |
+| Adapter README | rewritten: JS, Nim CLI, neutral protocol, gaps |
+
+Known gaps unchanged: `code-review` skill, settings entries generation, evaluation readers
+(Rust), non-interactive shell denials.
+
 ## 2026-11-04 — Nim phase 2: gates
 
 | Gate | Parity with Rust |

@@ -2,6 +2,6 @@
   "name": "cardinal-harness",
   "type": "module",
   "exports": {
-    ".": "./index.ts"
+    ".": "./index.js"
   }
 }
