@@ -2,6 +2,19 @@
 
 Decisions, evidence and dead ends, newest first. One entry per working session.
 
+## 2026-11-04 — Nim phase 1: sync and check
+
+| Item | Result |
+| --- | --- |
+| Binary | `nim/bin/cardinal-nim`, ~300 lines + a vendored SHA-256; no dependencies |
+| `check` parity | exit 0 on the synced project; all 41 Rust-written hashes match |
+| Drift / missing | both binaries exit 1 and name the file |
+| Fresh project `sync` | file tree identical to the Rust one; lock file lines identical |
+| SHA-256 | empty, `abc`, quick-brown-fox vectors pass |
+| Gap | settings entries preserved but not generated (0 vs 15 on a fresh project); gates are phase 2 |
+
+Details: `nim/README.md`.
+
 ## 2026-11-04 — git 2.31 requirement removed
 
 | Change | Detail |

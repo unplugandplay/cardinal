@@ -1,2 +1,5 @@
 # macOS
 .DS_Store
+
+# Nim build output
+nim/bin/

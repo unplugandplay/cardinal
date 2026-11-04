@@ -63,13 +63,13 @@ Two structural simplifications:
 
 ## Phases
 
-| Phase | Deliverable | Exit test |
+| Phase | Deliverable | Status |
 | --- | --- | --- |
-| 1 | Nim `sync`/`check` + manifest, same prompts | `cardinal check` matches the Rust binary byte for byte |
-| 2 | Nim gates: review, lint, read, lock | each gate refuses the same cases as today |
-| 3 | Plain-JS adapter calling the Nim CLI | OpenCode session exercises every gate |
-| 4 | Port issue queue / release or replace with recipes | `just next-issue` works |
-| 5 | Remove Rust and TypeScript from the tree | repository contains no `.rs`/`.ts` |
+| 1 | Nim `sync`/`check` + manifest, same prompts | **done 2026-11-04** — tree and lock lines match; `nim/README.md` |
+| 2 | Nim gates: review, lint, read, lock | next |
+| 3 | Plain-JS adapter calling the Nim CLI | planned |
+| 4 | Port issue queue / release or replace with recipes | planned |
+| 5 | Remove Rust and TypeScript from the tree | planned |
 
 Keep the Rust binary installed until phase 2 passes; run the Nim binary under a different name
 (`cardinal-nim`) and diff verdicts. Effort: 3–4 weeks including parity tests; phases 1–2 are the
