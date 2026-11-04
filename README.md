@@ -80,10 +80,10 @@ recorded; the native pre-commit gate still refuses un-reviewed commits.
 | git | 2.23+ (portable `rev-parse`; tested on 2.23 and 2.56) |
 | OpenCode | 2.2.4+ with a signed-in provider of your choice |
 
-No Rust is left: `sync`, `check`, the gates, `session-metrics`, `update`, the review hook and CI
-all run the Nim CLI. Unported helpers (`next-issue`, `close-issue`, `check-issue`, `check-specs`,
-`check-commits`, `release`, `worktree`, the legacy readers) answer with a clear "not ported" and
-exit 3; use the files manually until they land.
+No Rust is left: `sync`, `check`, the gates, `session-metrics`, `update`, the workflow helpers
+(commit rules, issue queue, review target, size, worktrees, specs, release), the review hook and CI
+all run the Nim CLI. The four legacy measurement readers are retired; `session-metrics` is the
+metric.
 
 Remote: `https://github.com/unplugandplay/cardinal` — `main` is the default branch.
 

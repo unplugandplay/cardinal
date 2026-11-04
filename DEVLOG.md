@@ -2,6 +2,22 @@
 
 Decisions, evidence and dead ends, newest first. One entry per working session.
 
+## 2026-11-04 — Nim phase 5c: workflow helpers
+
+| Tool | Verified |
+| --- | --- |
+| `commit-check`, `check-commits` | good/bad messages, scope and AI-attribution refusals, range check |
+| `check-issue`, `next-issue`, `close-issue` | template problems, ready queue, move to `issues/done/`, link rewrite |
+| `issue-claim` | claim ref under `refs/cardinal/claims/` |
+| `review-target`, `deliverable-size` | changed files minus issues/managed, line count vs the limit |
+| `worktree open`/`close` | create and remove a real worktree |
+| `release` | 0.1.0 proposal, CHANGELOG section, local tag |
+| `check-specs`, `spec-coverage` | headings and duplicate requirement ids |
+| `fixed-context`, `audit-sources` | byte counts |
+| Retired | `rule-breaches`, `delivered-quality`, `cardinal-report`, `cardinal-changes`, `upgrade` |
+
+Bug fixed: `release` parsed `git describe`'s error text when no tag existed.
+
 ## 2026-11-04 — Nim phase 5b: Rust removed
 
 | Change | Detail |

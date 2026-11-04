@@ -51,16 +51,20 @@ No dependencies: SHA-256 is vendored in `sha256.nim` and tested against the stan
 | `session-metrics` | identical rows on the mirror: project, models, start, duration, turns, tool calls, tokens, context peak |
 | SHA-256 | empty, `abc`, quick-brown-fox vectors pass |
 
-## Not yet in Nim
+## Workflow helpers
 
-| Gap | State |
+| Tool | State |
 | --- | --- |
-| issue queue (`next-issue`, `close-issue`, `check-issue`) | stub: exit 3 with a clear message; pick files manually |
-| specs (`check-specs`, `spec-coverage`) | stub |
-| commits (`check-commits`, `commit-check`) | stub |
-| `release`, `worktree`, `deliverable-size`, `review-target` | stub |
-| legacy readers (`rule-breaches`, `delivered-quality`, `cardinal-report`, `cardinal-changes`, `audit-sources`, `fixed-context`) | stub |
-| migrations, feature switching, git-URL `update` | not implemented |
+| `commit-check`, `check-commits` | Conventional Commits, scopes, no AI attribution |
+| `check-issue`, `next-issue`, `close-issue`, `issue-claim` | template checks, ready queue, move to `issues/done/`, claim refs |
+| `review-target`, `deliverable-size` | changed files minus issues/managed, line count against the limit |
+| `worktree open`/`close` | `git worktree` wrappers |
+| `release [version] [--tag]` | semver proposal from commits, CHANGELOG section, local tag |
+| `check-specs`, `spec-coverage` | spec headings, requirement ids, duplicate ids |
+| `fixed-context`, `audit-sources` | byte counts of memory files and instruction sources |
+
+Retired: `rule-breaches`, `delivered-quality`, `cardinal-report`, `cardinal-changes`, `upgrade`
+answer with a "retired" message; `session-metrics` covers the measurement need.
 
 `sync` merges the settings entries and installs the native review hook; the hook prefers
 `./nim/bin/cardinal-nim`, then `cardinal-nim`, then `cardinal`. `session-metrics` produces the same

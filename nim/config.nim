@@ -13,6 +13,9 @@ type
     rev*: string
 
   ProjectConfig* = object
+    commitScopes*: seq[string]
+    deliverableLimit*: int
+    issueLimit*: int
     lintCommand*: string
     lintDeclared*: bool
     lintFiles*: seq[string]
@@ -78,6 +81,8 @@ proc readSource*(root: string): SourceConfig =
     result.rev = unquote(table["cardinal"].getOrDefault("rev", ""))
 
 proc readProject*(root: string): ProjectConfig =
+  result.deliverableLimit = 1000
+  result.issueLimit = 3000
   let shared = parseTable(root / ConfigPath)
   let personal = parseTable(root / PersonalConfigPath)
   if shared.hasKey("project"):
@@ -93,6 +98,15 @@ proc readProject*(root: string): ProjectConfig =
     if table.hasKey("format_files"):
       result.formatFiles = arrayOf(table["format_files"])
     result.userLanguage = unquote(table.getOrDefault("user_language", ""))
+    result.commitScopes = arrayOf(table.getOrDefault("commit_scopes", "[]"))
+    try:
+      result.deliverableLimit = parseInt(unquote(table.getOrDefault("deliverable_size_limit", "1000")))
+    except ValueError:
+      discard
+    try:
+      result.issueLimit = parseInt(unquote(table.getOrDefault("issue_size_limit", "3000")))
+    except ValueError:
+      discard
   if personal.hasKey("project"):
     let table = personal["project"]
     if table.hasKey("user_language"):

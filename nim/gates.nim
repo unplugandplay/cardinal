@@ -7,7 +7,7 @@
 
 import std/[algorithm, json, os, osproc, posix, sequtils, streams, strutils, tables]
 
-import config, metrics, sha256, shell
+import config, metrics, sha256, shell, workflow
 
 const
   FrenchWords = [
@@ -562,16 +562,25 @@ proc runTool*(root, tool: string; args: seq[string]; input: string): int =
   of "format-code": formatCode(event)
   of "language-hint": languageHint(event)
   of "session-metrics": runSessionMetrics(args)
+  of "commit-check": commitCheck(root, input)
+  of "check-commits": checkCommits(root, args)
+  of "check-issue": checkIssue(root, args)
+  of "next-issue": nextIssue(root, args)
+  of "close-issue": closeIssue(root, args)
+  of "issue-claim": issueClaim(root, args)
+  of "review-target": reviewTarget(root, args)
+  of "deliverable-size": deliverableSize(root, args)
+  of "worktree": worktree(root, args)
+  of "release": release(root, args)
+  of "check-specs": checkSpecs(root, args)
+  of "spec-coverage": specCoverage(root, args)
+  of "fixed-context": fixedContext(root, args)
+  of "audit-sources": auditSources(root, args)
   else:
-    const NotPorted = [
-      "audit-sources", "cardinal-changes", "cardinal-report", "check-commits",
-      "check-issue", "check-specs", "close-issue", "commit-check",
-      "deliverable-size", "delivered-quality", "fixed-context", "issue-claim",
-      "next-issue", "release", "review-target", "rule-breaches",
-      "spec-coverage", "upgrade", "worktree",
-    ]
-    if tool in NotPorted:
-      stderr.writeLine("cardinal: '" & tool & "' is not ported to Nim yet; do it manually or see README")
+    const Retired = ["cardinal-changes", "cardinal-report", "delivered-quality",
+                     "rule-breaches", "upgrade"]
+    if tool in Retired:
+      stderr.writeLine("cardinal: '" & tool & "' is retired; use `cardinal run session-metrics`")
     else:
       stderr.writeLine("cardinal: unknown tool " & tool)
     3

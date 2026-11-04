@@ -70,7 +70,7 @@ answer with a "not ported" message and exit 3.
 | 4 | Metrics and update | **done 2026-11-04** — identical `session-metrics` rows; local `update` |
 | 5 | Remove Rust and TypeScript from the tree | **done 2026-11-04** — prompts in `harness/`, Rust tree and binary deleted, CLI installed as `cardinal` |
 
-Unported helpers stub with exit 3; the daily loop (prompts, gates, sync, metrics) is Nim.
+Workflow helpers are Nim; the retired measurement readers answer with a "retired" message. The daily loop is Nim.
 Effort: 3–4 weeks including parity tests; phases 1–2 are the
 bulk.
 
