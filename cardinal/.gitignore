@@ -1,0 +1,6 @@
+# The agent harness lives in .claude/ and CLAUDE.md (some global gitignores hide them).
+!.claude/
+!CLAUDE.md
+/target
+.env
+.claude/settings.local.json

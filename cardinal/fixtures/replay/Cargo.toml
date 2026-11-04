@@ -1,0 +1,8 @@
+[package]
+name = "replay-fixture"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# Its own workspace: a project of its own once copied, never a member of Cardinal's.
+[workspace]

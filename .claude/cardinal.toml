@@ -1,0 +1,47 @@
+[cardinal]
+rev = "main"
+source = "cardinal"
+
+# Values of this project that Cardinal, the shared agent harness, reads. Owned by the project: `cardinal sync` never
+# rewrites it.
+
+[project]
+# Scopes allowed in commit messages besides `docs` and `cardinal` (crates, areas).
+commit_scopes = []
+# Documents at the repository root that skills may cite besides AGENTS.md and CLAUDE.md (delivered-quality counts
+# their lines as docs).
+root_docs = ["README.md"]
+# Directories that scripts do not scan besides .git, node_modules and the build output (target).
+skipped_dirs = []
+# File-name patterns of the test files whose `spec:` citations `check-specs` reads (default ["*.rs"]), e.g.
+# ["test_*.py", "*_test.go"]; each is read with the line-comment marker of its extension.
+# spec_files = ["*.rs"]
+# Directories whose tests call the code from inside, for the boundary warning of `check-specs` (default ["src"]).
+# internal_dirs = ["src"]
+# The lint the Stop hook `lint-gate` runs (`sh -c`, from the project directory) while a file named like one of
+# `lint_files` changed (every file when absent); without it, `cargo clippy` over the `.rs` files; "" turns it off.
+# lint_command = "npx eslint ."
+# lint_files = ["*.ts", "*.tsx"]
+# The format the hook `format-code` runs after an edit of a file named like one of `format_files` (every file when
+# absent), with that file as last argument, from the root of the work tree; without it, `cargo fmt` for a `.rs` file.
+# format_command = "npx prettier --write"
+# format_files = ["*.ts", "*.tsx"]
+# The release tool (`just release`): the command that writes the new version into the project's manifests, run from
+# the root with the version as last argument, and the files whose change makes a commit breaking (a major version).
+# release_version_command = "npm version --no-git-tag-version"
+# release_breaking_files = []
+# The size limit `deliverable-size` checks, in changed lines (issue-workflow): of a deliverable, and of a whole issue.
+# deliverable_size_limit = 1000
+# issue_size_limit = 3000
+# Where the agent finds the context of the project (issue-workflow, create-issue, prioritize-issues).
+roadmap = ["ROADMAP.md"]
+architecture = "docs/architecture.md"
+# Where the rules for writing tests are (issue-workflow, step "test first").
+test_conventions = "CLAUDE.md"
+# What must never be named in an issue or a committed file (create-issue); generic wording only.
+confidential = "nothing is confidential"
+# Language of the conversation with the user (skills, code, docs and issues stay in English); each person may override
+# it in the `[project]` table of `.claude/cardinal.local.toml`, which git ignores.
+user_language = "English"
+# Bytes of the memory files and skill descriptions every session loads; `check`, `sync` and `update` warn above it.
+# fixed_context_budget = 12000

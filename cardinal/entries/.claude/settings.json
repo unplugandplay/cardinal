@@ -1,0 +1,103 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cardinal run *)"
+    ],
+    "ask": [
+      "Bash(cardinal run release *.*)",
+      "Bash(just release *.*)"
+    ],
+    "deny": [
+      "Bash(just waive-review)",
+      "Bash(just waive-review *)",
+      "Edit(//**/claude-review-waived)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cardinal run review-gate check"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|Edit|Write|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cardinal run workspace-lock check"
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cardinal run read-hint"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cardinal run review-gate record"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cardinal run format-code"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cardinal run lint-gate",
+            "timeout": 600
+          },
+          {
+            "type": "command",
+            "command": "cardinal run language-hint",
+            "timeout": 600
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cardinal run workspace-lock start"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cardinal run workspace-lock release"
+          }
+        ]
+      }
+    ]
+  }
+}

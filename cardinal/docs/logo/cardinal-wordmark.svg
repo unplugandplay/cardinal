@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 220" role="img" aria-labelledby="t" font-family="system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif">
+  <title id="t">Cardinal</title>
+
+  <rect x="0.5" y="0.5" width="719" height="219" rx="24" fill="#17171b" stroke="#2a2a31"/>
+
+  <g transform="translate(30 20) scale(0.703125)">
+    <circle cx="128" cy="128" r="74" fill="none" stroke="#9b978e" stroke-width="3" stroke-opacity="0.5"/>
+    <g fill="#e8e6e1">
+      <path d="M228 128 L143.6 112.4 L128 128 Z"/>
+      <path d="M128 228 L143.6 143.6 L128 128 Z"/>
+      <path d="M28 128 L112.4 143.6 L128 128 Z"/>
+    </g>
+    <g fill="#9b978e">
+      <path d="M228 128 L143.6 143.6 L128 128 Z"/>
+      <path d="M128 228 L112.4 143.6 L128 128 Z"/>
+      <path d="M28 128 L112.4 112.4 L128 128 Z"/>
+    </g>
+    <path d="M128 24 L112.4 112.4 L128 128 Z" fill="#d4af37"/>
+    <path d="M128 24 L143.6 112.4 L128 128 Z" fill="#8f7328"/>
+    <circle cx="128" cy="128" r="7" fill="#17171b" stroke="#d4af37" stroke-width="3"/>
+  </g>
+
+  <text x="232" y="128" font-size="84" font-weight="600" letter-spacing="2" fill="#e8e6e1">cardinal</text>
+  <text x="236" y="168" font-size="22" letter-spacing="1" fill="#9b978e">set the course for your agents</text>
+</svg>

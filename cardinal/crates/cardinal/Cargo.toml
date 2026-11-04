@@ -1,0 +1,25 @@
+[package]
+name = "cardinal"
+version = "3.1.0"
+edition.workspace = true
+license.workspace = true
+default-run = "cardinal"
+description = "Cardinal: synchronise the shared agent harness (skills, hooks, scripts) into a project"
+
+[[bin]]
+name = "cardinal"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1"
+chrono = "0.4"
+clap = { version = "4", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+sha2 = "0.10"
+toml = "0.8"
+
+[dev-dependencies]
+tempfile = "3"
+
+[lints]
+workspace = true

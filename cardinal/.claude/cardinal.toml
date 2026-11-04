@@ -1,0 +1,31 @@
+[cardinal]
+source = "."
+
+# Values of this project that Cardinal, the shared agent harness, reads. Owned by the project: `cardinal sync` never
+# rewrites it.
+
+[project]
+# Scopes allowed in commit messages besides `docs` and `cardinal` (crates, areas).
+commit_scopes = ["sync", "files"]
+# Documents at the repository root that skills may cite besides AGENTS.md and CLAUDE.md (delivered-quality counts
+# their lines as docs).
+root_docs = ["README.md"]
+# Directories that scripts do not scan besides .git, node_modules and the build output (target).
+# `fixtures/` holds the projects of the replay runs: their specs and citations are their own.
+skipped_dirs = ["fixtures"]
+# The release tool (`just release`): the recipe that writes the version into the crate and its lock, and the file
+# whose change makes a commit breaking: a raised format is one an older `cardinal` cannot read (ADR 0014).
+release_version_command = "just set-version"
+release_breaking_files = ["cardinal-format"]
+# Where the agent finds the context of the project (issue-workflow, create-issue, prioritize-issues).
+roadmap = ["ROADMAP.md"]
+architecture = "docs/architecture.md"
+# Where the rules for writing tests are (issue-workflow, step "test first").
+test_conventions = "CLAUDE.md"
+# What must never be named in an issue or a committed file (create-issue); generic wording only.
+confidential = "name no private project of the user in a shared file or an issue; the shared harness must hold nothing specific to one project"
+# Language of the conversation with the user (skills, code, docs and issues stay in English); each person may override
+# it in the `[project]` table of `.claude/cardinal.local.toml`, which git ignores.
+user_language = "French"
+# Bytes of the memory files and skill descriptions every session loads; `check`, `sync` and `update` warn above it.
+fixed_context_budget = 10000

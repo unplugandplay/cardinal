@@ -1,0 +1,89 @@
+# The features of the managed content a project may turn off with `disabled` in the `[cardinal]` table of its
+# `.claude/cardinal.toml` (specs/features.md, ADR 0025): `files` are paths under files/, `entries` are managed entries
+# of entries/.claude/settings.json as `sync` prints them, `needs` the features it needs (left on while it is).
+
+# The rule against AI attribution, and the checks of `commit-check`, `check-commits`, `check-issue`, the attribution
+# warning of `check` and rule `commit-attribution` of `rule-breaches`.
+[no-ai-attribution]
+files = [".claude/rules/no-ai-attribution.md"]
+
+# The commit message convention (Conventional Commits), for a project with its own: `commit-check`, `check-commits`
+# and rule `commit-format` of `rule-breaches` then check only the attribution and the `Expected-effect:` footers, and
+# `release` proposes the version from `release_breaking_files` only, listing the subjects under `Changed`.
+[conventional-commits]
+files = [".claude/skills/commit-message/conventional-commits.md"]
+
+# The Stop hook that blocks the end of a turn while the project's lint reports a problem (specs/lint-gate.md), for a
+# project whose lint runs elsewhere, such as in CI.
+[lint-gate]
+entries = ["hook Stop cardinal run lint-gate"]
+
+# The hook that formats each edited file (specs/format-hook.md), for a project whose editor formats.
+[format-code]
+entries = ["hook PostToolUse Edit|Write cardinal run format-code"]
+
+# The Stop hook that sends the agent back when its reply is not in the `user_language` (specs/language-hint.md); rule
+# `user-language` of `rule-breaches` still applies, the rule being the user's.
+[language-hint]
+entries = ["hook Stop cardinal run language-hint"]
+
+# The PreToolUse hook that sends the agent back once before a whole read of a large file (specs/read-hint.md), for a
+# project whose agent reads its files whole on purpose; rule `oversized-result` of `rule-breaches` still applies.
+[read-hint]
+entries = ["hook PreToolUse Read cardinal run read-hint"]
+
+# The worktree lock (specs/workspace-lock.md): its three hooks, for a user who never runs two sessions in one worktree;
+# the hook call of each tool call goes. `issue-claim` stays, still guarding an issue across worktrees.
+[workspace-lock]
+entries = [
+    "hook PreToolUse Bash|Edit|Write|NotebookEdit cardinal run workspace-lock check",
+    "hook SessionEnd cardinal run workspace-lock release",
+    "hook SessionStart cardinal run workspace-lock start",
+]
+
+# The review gate (specs/review-gate.md): its two hooks, the deny rules of its waiver and the recipe `waive-review`, for
+# a project that reviews in pull requests or a solo user; `sync` then removes the native git gate it installed and
+# gives a chained `pre-commit` back (SYN-60). The refusals of `review-gate check` (`--no-verify`, `git add -A`) go too,
+# and the rules `no-verify`, `stage-everything`, `review-waiver` and `review-before-commit` of `rule-breaches`.
+[review-gate]
+files = ["cardinal-review.just"]
+entries = [
+    "deny Bash(just waive-review)",
+    "deny Bash(just waive-review *)",
+    "deny Edit(//**/claude-review-waived)",
+    "hook PreToolUse Bash cardinal run review-gate check",
+    "hook PostToolUse Skill cardinal run review-gate record",
+]
+
+# The skills that measure the harness and audit the instructions, for a project that does not evaluate Cardinal; the
+# warning of `check`, `sync` and `update` on the retention of the transcripts they read (SYN-28) goes too.
+[harness-measure]
+files = [".claude/skills/audit-instructions/SKILL.md", ".claude/skills/evaluate-harness/SKILL.md"]
+
+# The format of the reports to the user (tables, no narration), for a project with its own; the language of the
+# conversation stays, in a rule of its own (FEA-29).
+[report-style]
+files = [".claude/rules/reports-to-the-user.md"]
+
+# The GitHub CI job and the installer it runs, for a project not on GitHub.
+[github-ci]
+files = [".github/install_cardinal.sh", ".github/workflows/cardinal.yml"]
+
+# The issue files (`issues/`): the skills that write, order and drive them and their recipes, for a project tracking
+# its issues in another tool. The issue tools of `cardinal run` stay, nothing left on calls them; the seeded
+# `ROADMAP.md` is the project's.
+[issue-files]
+files = [
+    ".claude/skills/create-issue/SKILL.md",
+    ".claude/skills/issue-workflow/SKILL.md",
+    ".claude/skills/issue-workflow/details.md",
+    ".claude/skills/prioritize-issues/SKILL.md",
+    "cardinal-issues.just",
+]
+
+# The specs and their tracing: `specs/README.md`, `specs/TEMPLATE.md`, the skill `write-spec` and the recipes of
+# `cardinal-specs.just`, for a project that writes no spec. `issue-workflow` skips its spec steps without
+# `specs/README.md`, the CI and the seeded `check` without
+# `cardinal-specs.just`; the spec tools of `cardinal run` stay.
+[specs]
+files = [".claude/skills/write-spec/SKILL.md", "cardinal-specs.just", "specs/README.md", "specs/TEMPLATE.md"]
