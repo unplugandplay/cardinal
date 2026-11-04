@@ -22,3 +22,21 @@ jobs:
         run: nim c -d:release --hints:off -o:nim/bin/cardinal-nim nim/cardinal.nim
       - name: Check the managed copies, the settings entries and the review gate
         run: nim/bin/cardinal-nim check
+      - name: Check the specs
+        run: nim/bin/cardinal-nim run check-specs
+
+  commits:
+    name: commit messages
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: jiro4989/setup-nim-action@v2
+        with:
+          nim-version: "2.2.12"
+      - name: Build the Nim CLI
+        run: nim c -d:release --hints:off -o:nim/bin/cardinal-nim nim/cardinal.nim
+      - name: Check every commit of the PR
+        run: nim/bin/cardinal-nim run check-commits ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}

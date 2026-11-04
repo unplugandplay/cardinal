@@ -15,6 +15,7 @@ Decisions, evidence and dead ends, newest first. One entry per working session.
 | `check-specs`, `spec-coverage` | headings and duplicate requirement ids |
 | `fixed-context`, `audit-sources` | byte counts |
 | Retired | `rule-breaches`, `delivered-quality`, `cardinal-report`, `cardinal-changes`, `upgrade` |
+| CI | specs and commit-message checks restored on the Nim CLI |
 
 Bug fixed: `release` parsed `git describe`'s error text when no tag existed.
 
