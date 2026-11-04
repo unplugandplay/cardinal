@@ -57,5 +57,5 @@ No dependencies: SHA-256 is vendored in `sha256.nim` and tested against the stan
 
 `sync` now merges the settings entries and installs the native review hook; the Rust binary
 accepts a project synced by `cardinal-nim` (`cardinal check` exits 0), with identical entry lines,
-settings and hook. The Rust `cardinal` remains installed only for the evaluation readers and
-`update`.
+settings and hook. The Rust `cardinal` remains installed for the evaluation readers, `update`, and
+the native hook binary; phase 5 installs the Nim binary as `cardinal` and removes it.

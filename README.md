@@ -76,7 +76,7 @@ recorded; the native pre-commit gate still refuses un-reviewed commits.
 | Tool | Install |
 | --- | --- |
 | Nim CLI | `nim c -d:release --hints:off -o:nim/bin/cardinal-nim nim/cardinal.nim` |
-| Rust `cardinal` | only for the evaluation readers and `update`: `cargo install --force --path cardinal/crates/cardinal --locked` |
+| Rust `cardinal` | the evaluation readers, `update`, and the native hook binary until phase 5: `cargo install --force --path cardinal/crates/cardinal --locked` |
 | `just` | `brew install just` |
 | git | 2.23+ (portable `rev-parse`; tested on 2.23 and 2.56) |
 | OpenCode | 2.2.4+ with a signed-in provider of your choice |

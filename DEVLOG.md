@@ -13,7 +13,8 @@ Decisions, evidence and dead ends, newest first. One entry per working session.
 | `check` | now fails on a missing managed entry or a missing gate |
 | Remaining in Nim `sync` | migrations, feature switching, `--rev`/`update` |
 
-Rust is now needed only for the evaluation readers and `update`.
+Rust is now needed only for the evaluation readers, `update`, and the hook binary; phase 5 installs
+the Nim binary as `cardinal` and removes it.
 
 ## 2026-11-04 — Nim phase 3: plain-JS adapter
 
