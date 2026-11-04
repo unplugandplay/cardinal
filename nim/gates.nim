@@ -7,7 +7,7 @@
 
 import std/[algorithm, json, os, osproc, posix, sequtils, streams, strutils, tables]
 
-import config, sha256, shell
+import config, metrics, sha256, shell
 
 const
   FrenchWords = [
@@ -547,6 +547,7 @@ proc runTool*(root, tool: string; args: seq[string]; input: string): int =
   of "workspace-lock": workspaceLock(args, event)
   of "format-code": formatCode(event)
   of "language-hint": languageHint(event)
+  of "session-metrics": runSessionMetrics(args)
   else:
     stderr.writeLine("cardinal-nim: unknown tool " & tool)
     3

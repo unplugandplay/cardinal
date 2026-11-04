@@ -28,7 +28,7 @@ opencode            # in this directory: DeepSeek + the Cardinal skills are alre
 | `.claude/` | Cardinal's managed files: 8 skills, 3 rules, `cardinal.toml`, `cardinal.lock`, `settings.json` |
 | `cardinal/` | vendored Cardinal source (MIT), so the project needs no separate clone |
 | `.opencode/plugins/cardinal/` | plain-JS adapter calling the Nim CLI: maps OpenCode hooks onto the gates ([README](.opencode/plugins/cardinal/README.md)) |
-| `nim/` | the Nim CLI: sync/check and the gates (phases 1–3) |
+| `nim/` | the Nim CLI: sync/check, the gates, `session-metrics`, `update` |
 | `opencode.jsonc` | skills and instructions sources, waiver denies (no model — see `.env`) |
 | `.env` | `OPENCODE_MODEL=<provider>/<model>` — the single place the model and provider are chosen |
 | `AGENTS.md`, `cardinal*.just`, `justfile`, `specs/` | Cardinal's managed harness, synced |
@@ -65,7 +65,7 @@ opencode            # in this directory: DeepSeek + the Cardinal skills are alre
 | Evaluation | the adapter mirrors each session to `~/.local/share/cardinal/projects/<slug>/<session>.jsonl` |
 
 ```sh
-cardinal run session-metrics ~/.local/share/cardinal/projects   # Rust, until the reader is ported
+cardinal-nim run session-metrics ~/.local/share/cardinal/projects
 ```
 
 Remaining gap: the `code-review` skill is not part of Cardinal's 8 skills, so no review marker is
@@ -76,7 +76,7 @@ recorded; the native pre-commit gate still refuses un-reviewed commits.
 | Tool | Install |
 | --- | --- |
 | Nim CLI | `nim c -d:release --hints:off -o:nim/bin/cardinal-nim nim/cardinal.nim` |
-| Rust `cardinal` | the evaluation readers, `update`, and the native hook binary until phase 5: `cargo install --force --path cardinal/crates/cardinal --locked` |
+| Rust `cardinal` | only the native hook binary until phase 5; the CLI itself is Nim |
 | `just` | `brew install just` |
 | git | 2.23+ (portable `rev-parse`; tested on 2.23 and 2.56) |
 | OpenCode | 2.2.4+ with a signed-in provider of your choice |

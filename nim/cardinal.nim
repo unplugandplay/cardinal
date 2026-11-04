@@ -20,7 +20,8 @@ const
 usage:
   cardinal-nim check            fail when a managed copy drifted
   cardinal-nim sync [--dry-run] [--force]
-  cardinal-nim run <tool> [args]  a gate, reading the event on stdin
+  cardinal-nim run <tool> [args]  a gate or session-metrics, reading the event on stdin
+  cardinal-nim update [--dry-run] [--force] [--rev <rev>]
   cardinal-nim --version"""
 
 type
@@ -133,6 +134,21 @@ proc cmdCheck(root: string) =
   if drifted > 0:
     stderr.writeLine("cardinal-nim: " & $drifted & " managed file(s) or entries drifted; run cardinal sync or fix the source")
     quit(1)
+
+proc cmdSync(root: string, dryRun, force: bool)
+
+proc cmdUpdate(root: string; dryRun, force: bool; rev: string) =
+  let config = readSource(root)
+  if config.source.len == 0:
+    die("no source in " & ConfigPath)
+  let source = if config.source.isAbsolute: config.source else: root / config.source
+  if dirExists(source):
+    if rev.len > 0:
+      echo "note: the source is a local directory; --rev is ignored"
+    echo "source is local (" & config.source & "): syncing"
+    cmdSync(root, dryRun, force)
+    return
+  die("git sources are not fetched by cardinal-nim; clone the source and point [cardinal].source at the path")
 
 proc cmdSync(root: string, dryRun, force: bool) =
   let config = readSource(root)
@@ -260,6 +276,23 @@ when isMainModule:
       die("usage: cardinal-nim run <tool> [args]")
     let input = readAll(stdin)
     quit(runTool(root, args[1], (if args.len > 2: args[2 .. ^1] else: @[]), input))
+  of "update":
+    var dryRun = false
+    var force = false
+    var rev = ""
+    if args.len > 1:
+      var index = 1
+      while index < args.len:
+        case args[index]
+        of "--dry-run": dryRun = true
+        of "--force": force = true
+        of "--rev":
+          inc index
+          if index >= args.len: die("--rev needs a revision")
+          rev = args[index]
+        else: die("unknown option " & args[index])
+        inc index
+    cmdUpdate(root, dryRun, force, rev)
   of "sync":
     var dryRun = false
     var force = false

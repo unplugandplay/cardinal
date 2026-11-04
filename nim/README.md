@@ -20,7 +20,8 @@ No dependencies: SHA-256 is vendored in `sha256.nim` and tested against the stan
 | `cardinal-nim sync` | copies `source/files/` (managed), seeds `source/seed/` once, rewrites the lock |
 | `cardinal-nim sync --dry-run` | prints the plan, writes nothing |
 | `cardinal-nim sync --force` | overwrites local edits of managed files |
-| `cardinal-nim run <tool> [args]` | a gate, reading the event JSON on stdin |
+| `cardinal-nim run <tool> [args]` | a gate or `session-metrics`, reading the event JSON on stdin |
+| `cardinal-nim update [--rev <rev>]` | syncs a local source (the vendored mode); git URLs are not fetched |
 
 ## Gates
 
@@ -46,16 +47,19 @@ No dependencies: SHA-256 is vendored in `sha256.nim` and tested against the stan
 | `lint-gate` | failing command 2, passing 0 — both |
 | `read-hint` | identical deny JSON and byte estimate |
 | `workspace-lock` | locks are cross-compatible: Rust lock + Nim check, Nim lock + Rust check both refuse |
+| `session-metrics` | identical rows on the mirror: project, models, start, duration, turns, tool calls, tokens, context peak |
 | SHA-256 | empty, `abc`, quick-brown-fox vectors pass |
 
 ## Not yet in Nim
 
 | Gap | Phase |
 | --- | --- |
-| migrations, features, `--rev`/`update` | 2b |
-| issue queue, release, worktrees, transcripts | 3+ |
+| migrations, feature switching | 2b |
+| git-URL `update` (fetch/clone) | 2b |
+| legacy measurement readers (`rule-breaches`, `delivered-quality`, `cardinal-report`, `cardinal-changes`, `audit-sources`, `fixed-context`) | optional |
 
 `sync` now merges the settings entries and installs the native review hook; the Rust binary
 accepts a project synced by `cardinal-nim` (`cardinal check` exits 0), with identical entry lines,
-settings and hook. The Rust `cardinal` remains installed for the evaluation readers, `update`, and
-the native hook binary; phase 5 installs the Nim binary as `cardinal` and removes it.
+settings and hook. `session-metrics` produces the same rows as Rust; `update` syncs the local
+source. The installed Rust binary is only the native hook binary now; phase 5 installs the Nim
+binary as `cardinal`.

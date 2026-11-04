@@ -2,6 +2,15 @@
 
 Decisions, evidence and dead ends, newest first. One entry per working session.
 
+## 2026-11-04 — Nim phase 4: metrics and update
+
+| Piece | Result |
+| --- | --- |
+| `session-metrics` | reads the mirror; rows identical to Rust for project, models, start, duration, turns, tool calls, tokens and context peak |
+| `update` | local/vendored source: pins nothing, runs `sync`; `--rev` ignored with a note; git URLs refused with guidance |
+| Unsupported columns | issues, revision, versions, advisors, validations stay empty/0 (no neutral source in the mirror) |
+| Remaining Rust | the native hook binary (phase 5), migrations/features, git-URL fetch; legacy readers optional |
+
 ## 2026-11-04 — Nim sync complete (entries + review hook)
 
 | Piece | Result |
