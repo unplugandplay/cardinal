@@ -1,5 +1,5 @@
 $ sh -c cd '<tmp>/hello-world' && git add .claude AGENTS.md CHANGELOG.md ROADMAP.md justfile cardinal-commits.just cardinal-issues.just cardinal-review.just cardinal-specs.just cardinal.just specs .github && git commit -m 'chore: adopt cardinal'
-[master (commit racine) 730efa5] chore: adopt cardinal
+[master (commit racine) 72da808] chore: adopt cardinal
  30 files changed, 1254 insertions(+)
  create mode 100644 .claude/.gitignore
  create mode 100644 .claude/cardinal.lock

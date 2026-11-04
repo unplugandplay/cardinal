@@ -223,9 +223,10 @@ record metrics "$CARDINAL" run session-metrics "$FIX/projects"
 expect "session-metrics" 0 "$(code_of metrics)"
 grep -q "ses_demo" "$LOGS/metrics.log" && expect "session-metrics lists the session" 0 0 || expect "session-metrics lists the session" 0 1
 
-# Make the logs portable: no home, repo or temp paths.
+# Make the logs portable: no home, repo or temp paths (the resolved temp path too).
+TMP_REAL=$(cd "$TMP" && pwd -P)
 for log in "$LOGS"/*.log; do
-  sed -e "s|$ROOT|<repo>|g" -e "s|$TMP|<tmp>|g" -e "s|$HOME|~|g" "$log" > "$log.tmp" && mv "$log.tmp" "$log"
+  sed -e "s|$ROOT|<repo>|g" -e "s|$TMP_REAL|<tmp>|g" -e "s|$TMP|<tmp>|g" -e "s|$HOME|~|g" "$log" > "$log.tmp" && mv "$log.tmp" "$log"
 done
 
 echo
