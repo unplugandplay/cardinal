@@ -2,6 +2,19 @@
 
 Decisions, evidence and dead ends, newest first. One entry per working session.
 
+## 2026-11-04 — Nim sync complete (entries + review hook)
+
+| Piece | Result |
+| --- | --- |
+| Settings entries | `sync` merges `entries/.claude/settings.json` into `.claude/settings.json`, records the 15 `entry` lines |
+| Review hook | installs the native `pre-commit` gate; a foreign hook moves to `pre-commit.user`; identical bytes to the Rust one |
+| Fresh project | Rust `cardinal check` exits 0 on a project synced only by `cardinal-nim` |
+| Parity | entry lines identical, settings JSON equal, hook identical, executable bit set |
+| `check` | now fails on a missing managed entry or a missing gate |
+| Remaining in Nim `sync` | migrations, feature switching, `--rev`/`update` |
+
+Rust is now needed only for the evaluation readers and `update`.
+
 ## 2026-11-04 — Nim phase 3: plain-JS adapter
 
 | Change | Detail |

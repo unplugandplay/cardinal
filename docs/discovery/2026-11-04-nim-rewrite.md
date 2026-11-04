@@ -68,6 +68,7 @@ Two structural simplifications:
 | 1 | Nim `sync`/`check` + manifest, same prompts | **done 2026-11-04** — tree and lock lines match; `nim/README.md` |
 | 2 | Nim gates: review, lint, read, lock | **done 2026-11-04** — parity table in `nim/README.md` |
 | 3 | Plain-JS adapter calling the Nim CLI | **done 2026-11-04** — `index.js`, neutral events, `language-hint` ported |
+| 2b | Sync completeness | **done 2026-11-04** — entries merged, review hook installed, Rust `check` accepts the result |
 | 4 | Port issue queue / release or replace with recipes | next |
 | 5 | Remove Rust and TypeScript from the tree | planned |
 

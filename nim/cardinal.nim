@@ -9,7 +9,7 @@
 
 import std/[algorithm, os, streams, strutils, tables]
 
-import config, gates, sha256
+import config, entries, gates, sha256
 
 const
   ConfigPath = ".claude/cardinal.toml"
@@ -117,8 +117,21 @@ proc cmdCheck(root: string) =
     if hashOf(file) != baseHash(expected):
       stderr.writeLine("drifted: " & path)
       inc drifted
+  let settings = readSettings(root / SettingsPath)
+  for line in lock.entries:
+    var entry: Entry
+    try:
+      entry = fromLock(line)
+    except CatchableError, ValueError:
+      continue
+    if settings.isNil or not holds(settings, entry):
+      stderr.writeLine("missing entry: " & label(entry))
+      inc drifted
+  if not hookInstalled(root):
+    stderr.writeLine("missing: native review gate")
+    inc drifted
   if drifted > 0:
-    stderr.writeLine("cardinal-nim: " & $drifted & " managed file(s) drifted; run cardinal sync or fix the source")
+    stderr.writeLine("cardinal-nim: " & $drifted & " managed file(s) or entries drifted; run cardinal sync or fix the source")
     quit(1)
 
 proc cmdSync(root: string, dryRun, force: bool) =
@@ -194,8 +207,37 @@ proc cmdSync(root: string, dryRun, force: bool) =
     echo "seeded: ", rel
     inc changed
 
+  let wanted = ofSource(source)
+  var recorded: seq[Entry]
+  for line in previous.entries:
+    try:
+      recorded.add(fromLock(line))
+    except CatchableError, ValueError:
+      discard
+  let settingsFile = root / SettingsPath
+  var settings = readSettings(settingsFile)
+  var lockEntries = previous.entries
+  if not settings.isNil:
+    var outcomes: seq[string]
+    let mergeChanged = merge(settings, wanted, recorded, force, outcomes)
+    for line in outcomes:
+      echo line
+      inc changed
+    if mergeChanged and not dryRun:
+      writeSettings(settingsFile, settings)
+    lockEntries = @[]
+    for entry in wanted:
+      lockEntries.add(toLock(entry))
+  elif fileExists(settingsFile):
+    echo "warning: " & SettingsPath & " is not valid JSON; its managed entries are not synced"
+
+  let gate = installReviewHook(root, dryRun)
+  if gate.len > 0:
+    echo gate
+    inc changed
+
   if not dryRun:
-    writeLock(root, next, previous.entries)
+    writeLock(root, next, lockEntries)
   if changed == 0:
     echo "up to date"
   elif dryRun:

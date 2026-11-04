@@ -39,7 +39,8 @@ No dependencies: SHA-256 is vendored in `sha256.nim` and tested against the stan
 | --- | --- |
 | `check` on the synced project | exit 0; all 41 lock hashes match |
 | Drift / missing managed file | both exit 1 and name the file |
-| Fresh project `sync` | identical file tree; identical lock file lines |
+| Fresh project `sync` | identical file tree, lock lines, settings and hook; Rust `check` exits 0 |
+| Settings / hook drift | `cardinal-nim check` names the missing entry or gate |
 | `review-gate check` | 6/6 commands: identical exit code and messages |
 | `review-gate native` | no marker 2, covered 0, unseen file 2, waiver 0 — both |
 | `lint-gate` | failing command 2, passing 0 — both |
@@ -51,10 +52,10 @@ No dependencies: SHA-256 is vendored in `sha256.nim` and tested against the stan
 
 | Gap | Phase |
 | --- | --- |
-| settings entries (15 `entry` lines) preserved but not generated | 2b |
-| `language-hint` | 2b |
-| review-gate git hook install, migrations, features, `--rev` | 2b |
+| migrations, features, `--rev`/`update` | 2b |
 | issue queue, release, worktrees, transcripts | 3+ |
 
-The Rust `cardinal` stays the installed binary until the gap closes; `cardinal-nim` runs beside it
-for diffing.
+`sync` now merges the settings entries and installs the native review hook; the Rust binary
+accepts a project synced by `cardinal-nim` (`cardinal check` exits 0), with identical entry lines,
+settings and hook. The Rust `cardinal` remains installed only for the evaluation readers and
+`update`.
