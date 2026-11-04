@@ -2,6 +2,33 @@
 
 Decisions, evidence and dead ends, newest first. One entry per working session.
 
+## 2026-11-04 — flaw sweep: stale claims and Rust-flavoured markers fixed
+
+| Flaw | Fix |
+| --- | --- |
+| `language-hint` is ported and dispatched, but the `nim/gates.nim` header and `nim/README.md` still said deferred / not ported | both now list it as ported |
+| README said "four legacy measurement readers"; the CLI retires five (`rule-breaches`, `delivered-quality`, `cardinal-report`, `cardinal-changes`, `upgrade`) | README corrected |
+| `TLDR;` said "four gates" while the README lists six | TLDR lists all six (review, lock, read, format, lint, language) |
+| `// spec: ID` (Rust comment marker) in `update-docs`, `write-spec`, `issue-workflow` and `cardinal-specs.just` | `# spec: ID` in `harness/files`, re-synced into the managed copies |
+| `cardinal.toml` comments said "crates" | "areas" (project + seed) |
+| `crate` wording in `update-docs`, `issue-workflow/details.md`, `commit-message/conventional-commits.md` (found in review) | reworded to project/area, re-synced |
+| `just check` was a no-op although a unit test exists | runs the SHA-256 known-answer test; CI runs it as its own step (source + managed copy) |
+| `.env` still points at `index.ts`; the adapter is `index.js` | left for the user: editing `.env` is approval-gated in this session |
+| Verification | build ok, `sync` + `check` clean, `just check` ok, demo 43/43 |
+
+## 2026-11-04 — last Rust references replaced with Nim counterparts
+
+| Item | Change |
+| --- | --- |
+| `lint-gate` fallback | `cargo clippy` → `nim check --hints:off` over the changed `.nim` files; verified: broken file exits 2 with diagnostics, clean file exits 0 |
+| `format-code` fallback | `cargo fmt --all` → `nimpretty <file>`; verified: reformats the edited file in place |
+| File matching default | `*.rs` → `*.nim` (`actsOn`, used when `lint_files`/`format_files` are absent) |
+| Review hook | the `rust-script require_code_review.rs` legacy branch removed from the installed `pre-commit` |
+| `spec-coverage` | `_test.rs` dropped; `_test.nim` and `tests/` remain |
+| Docs | `cardinal.toml` (project + seed), `specs/README.md` (managed + `harness/files` source), `nim/README.md`, adapter README: Nim defaults; stale "still Rust-only" claims fixed |
+| Left as history | `DEVLOG.md` and `docs/discovery/` record the migration and keep their dated Rust mentions |
+| Verification | build ok, SHA-256 vectors ok, `sync` + `check` ok, demo 43/43 |
+
 ## 2026-11-04 — end-to-end demo and TLDR
 
 | Item | Result |

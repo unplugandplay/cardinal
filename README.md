@@ -47,6 +47,7 @@ opencode            # in this directory: the model from .env + the harness skill
 | `cardinal check` | fails when a managed copy drifted |
 | `cardinal sync` | copies, seeds, merges settings, installs the review gate |
 | `cardinal update` | moves to a new revision of the source |
+| `just check` | the project's own checks (SHA-256 known-answer test) |
 | `just waive-review` | skips the review gate for one commit — the user's, never the agent's |
 
 ## Gates in force
@@ -87,7 +88,7 @@ recorded; the native pre-commit gate still refuses un-reviewed commits.
 
 No Rust is left: `sync`, `check`, the gates, `session-metrics`, `update`, the workflow helpers
 (commit rules, issue queue, review target, size, worktrees, specs, release), the review hook and CI
-all run the Nim CLI. The four legacy measurement readers are retired; `session-metrics` is the
+all run the Nim CLI. The five legacy measurement readers are retired; `session-metrics` is the
 metric.
 
 Remote: `https://github.com/unplugandplay/cardinal` — `main` is the default branch.

@@ -35,11 +35,11 @@ its number (start its statement with `withdrawn:`, which exempts it from the che
 The kind, `deterministic`, says that a test with no network and no external service (fakes, temp dirs, pure
 functions) proves the requirement; what only a model's output could show is not a requirement (a requirement of the
 former `quality` kind is read untraced, with a warning: reword it for a test or withdraw it). The test carries a
-`// spec: RER-1` comment right above it, attributes and other comments included, and directly above a `fn` (several
-ids: `// spec: RER-1, RER-2`). A project whose tests are in another language lists their file-name patterns in
-`spec_files` of `.claude/cardinal.toml` (`["*.rs"]` when absent, e.g. `["test_*.py", "*_test.go"]`; `*` is the
+`# spec: RER-1` comment right above it, other comments included, and directly above a `proc` (several
+ids: `# spec: RER-1, RER-2`). A project whose tests are in another language lists their file-name patterns in
+`spec_files` of `.claude/cardinal.toml` (`["*_test.nim"]` when absent, e.g. `["test_*.py", "*_test.go"]`; `*` is the
 only wildcard), and the citation
-opens with the line-comment marker of the file's extension (`# spec: RER-1` in Python or shell, `-- spec:` in Lua or
+opens with the line-comment marker of the file's extension (`# spec: RER-1` in Nim, Python or shell, `-- spec:` in Lua or
 SQL, `;; spec:` in a Lisp; any of the four for an extension `check-specs` does not know), right above the test: past
 comments and decorators (`@`), the next line must not be blank. A test under `.claude/` (a managed one) may cite a spec the project does not have: the repository that ships it traces it. Only a prefix with no spec in the project is exempt: an unknown id of a spec the project has, and any citation outside `.claude/`, are still flagged. The repository that ships those tests runs the script with `--strict`, which removes the exemption.
 
@@ -48,7 +48,7 @@ program from its boundary (command line, files, exit code, output), placed outsi
 the managed tests under `.claude/`). That test is preferred when it is cheap and stable, not required: when a test
 through the binary would be impossible, slow or fragile, a test under `src` (one that calls the code from inside,
 ideally at the public boundary of a module) is the proof, and its citation gives the reason:
-`// spec: RER-1 (internal: <reason>)`, the reason covering every id of the line. `check-specs` warns, per spec, of the
+`# spec: RER-1 (internal: <reason>)`, the reason covering every id of the line. `check-specs` warns, per spec, of the
 requirements only tests under `src` cite as long as one of those citations at least gives no reason, and fails on a
 blank reason. A stack that keeps its internal tests elsewhere names those directories in `internal_dirs` of
 `.claude/cardinal.toml` (`["src"]` when absent), which then replace `src`.
@@ -71,7 +71,7 @@ refines (`(RER-2)`); it is not traced on its own.
   (a former status) is read as `accepted`, with a warning.
 
 The order is therefore: write the spec (`draft`), get it validated, write the tests with their
-`// spec: ID` (a failing test counts), set `accepted` once all are traced.
+`# spec: ID` (a failing test counts), set `accepted` once all are traced.
 
 ### Check
 
@@ -83,7 +83,7 @@ the tests of the Cardinal source. `skill:write-spec` writes and validates a spec
 
 `just spec-coverage` lists the test files that cite no requirement of an `accepted` spec, largest first: the
 capabilities worth a spec read back from their code and tests (`skill:write-spec`, "Bootstrap the spec of an existing
-capability"). A report, it fails only when git cannot list the files; a `.rs` file is a test file when it holds a test
-attribute, a file of another language when `spec_files` matches it. Both read the test files of the whole root,
-whatever the layout of the project (`crates/`, or `src/` and `tests/` at the root), but those under `.git`,
-`node_modules`, a `target` beside a `Cargo.toml` and the `skipped_dirs` of `.claude/cardinal.toml`.
+capability"). A report, it fails only when git cannot list the files; a `*_test.nim` file is a test file, a file of
+another language when `spec_files` matches it. Both read the test files of the whole root,
+whatever the layout of the project (`nim/`, or `src/` and `tests/` at the root), but those under `.git`,
+`node_modules`, the build output (`nimcache`) and the `skipped_dirs` of `.claude/cardinal.toml`.

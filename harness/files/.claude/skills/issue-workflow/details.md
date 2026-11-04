@@ -37,7 +37,7 @@ Several issues may share a worktree, one after the other; the worktree outlives 
   sessions in one worktree turns the feature `workspace-lock` off; the claim stays.
 - **Hooks** act on the work tree of their `cwd` (`lint-gate`, `review-gate`; `format-code` formats the project of the
   edited file); `cardinal run` finds the `cardinal.toml` of the worktree and runs the tools of the revision it pins
-  (with a local source, those of the worktree's own crate). The session's project is the worktree: its hooks are
+  (with a local source, those of the worktree's own project). The session's project is the worktree: its hooks are
   declared by the worktree's own `.claude/settings.json`, so a hook a branch adds runs at once in that session.
 
 ## Merge back

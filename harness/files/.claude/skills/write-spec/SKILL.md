@@ -39,9 +39,9 @@ mechanical rules. Don't implement anything here: the tests come after the user v
 5. **Validate with the user (STOP)**: show the requirements and ask what is missing or too strong, with one
    question per `[NEEDS CLARIFICATION: ...]` marker; replace each marker by the settled text once answered. The
    spec stays `draft`.
-6. **Trace**: write the tests from the requirements; each carries `// spec: ID` placed as `specs/README.md`
+6. **Trace**: write the tests from the requirements; each carries `# spec: ID` placed as `specs/README.md`
    says. Prove a requirement through the binary when that test is cheap and stable; otherwise an internal test is
-   the proof, its citation giving the reason (`// spec: ID (internal: <reason>)`): never write a long or fragile
+   the proof, its citation giving the reason (`# spec: ID (internal: <reason>)`): never write a long or fragile
    end-to-end test only to silence the boundary warning. When every requirement is traced, set `accepted`; `just check-specs` then enforces it.
 
 ## Bootstrap the spec of an existing capability
@@ -57,12 +57,12 @@ from an intended change; it runs the procedure above with these differences:
    step 5, the user validates it like any spec and decides whether a bug becomes a requirement or an issue.
 4. **Untested behaviour is not a requirement**: list it, then file it as a follow-up issue (`skill:create-issue`)
    whose tests will add the requirements.
-5. **Validate** (step 5 above), then **trace** by adding the `// spec: ID` to the existing tests, no new test: a test
-   under `src` gets its reason, `// spec: ID (internal: <reason>)`. Every requirement is then traced: set `accepted`.
+5. **Validate** (step 5 above), then **trace** by adding the `# spec: ID` to the existing tests, no new test: a test
+   under `src` gets its reason, `# spec: ID (internal: <reason>)`. Every requirement is then traced: set `accepted`.
 
 ## Rules
 
 * An obligation no test with fakes can prove (it depends on what a model writes) is not a requirement: reword it
   until a test can, or state it as a non-goal; never leave a requirement untraced.
-* `accepted` means validated and traced: never set it before the tests carry their `// spec: ID` (a failing
+* `accepted` means validated and traced: never set it before the tests carry their `# spec: ID` (a failing
   test counts, the check only looks for the citation).

@@ -5,6 +5,6 @@ default:
     @just --list
 
 # Format, lint and test the project. Add the project's own commands here, quiet on success: the agent reads their
-# output. No project checks are configured yet.
+# output.
 check:
-    @echo "no project checks configured"
+    @nim c -r --hints:off -o:nim/bin/sha256_test nim/sha256_test.nim

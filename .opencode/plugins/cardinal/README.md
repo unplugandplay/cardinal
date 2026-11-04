@@ -36,7 +36,7 @@ Binary lookup order: `CARDINAL_BIN`, `<project>/nim/bin/cardinal-nim`, `~/.local
 
 The per-session liveness PID is a small `sh` loop owned by the plugin; it exits within a minute of
 the server. The mirror carries ids, models and real token usage, so
-`cardinal-nim run session-metrics …` works once that tool is ported (Rust `cardinal` today).
+`cardinal-nim run session-metrics …` reads it directly.
 
 After editing `.env`, reload the adapter: touch `index.js` (hot reload) or `opencode service restart`.
 
@@ -47,4 +47,4 @@ After editing `.env`, reload the adapter: touch `index.js` (hot reload) or `open
 | `code-review` skill | the review gate records it when run; that skill is not part of Cardinal's 8 skills, so nothing records a review yet (the native pre-commit gate still refuses un-reviewed commits) |
 | Non-interactive deny | `opencode run` ends the run on a shell denial (`permission.rejected`) instead of handing the reason back; the TUI continues |
 | Settings entries | `cardinal-nim sync` preserves them but does not generate them yet |
-| Evaluation tools | `session-metrics`, `rule-breaches`, … are still Rust-only |
+| Legacy evaluation readers | `rule-breaches`, `delivered-quality`, `cardinal-report`, `cardinal-changes`, `upgrade` are retired; `session-metrics` covers the measurement need |

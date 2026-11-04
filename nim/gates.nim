@@ -1,9 +1,8 @@
-## The gates, ported from the Rust tools with the same stdin contract and exit
-## codes: 0 pass, 2 refusal, 3 tool/usage error.
+## The gates, ported from the original tools with the same stdin contract and
+## exit codes: 0 pass, 2 refusal, 3 tool/usage error.
 ##
 ## Ported: review-gate (check/record/native), lint-gate, read-hint,
-## workspace-lock (check/start/release), format-code.
-## Deferred: language-hint (it needs the word lists).
+## workspace-lock (check/start/release), format-code, language-hint.
 
 import std/[algorithm, json, os, osproc, posix, sequtils, streams, strutils, tables]
 
@@ -53,7 +52,7 @@ proc wildcard(pattern, text: string): bool =
     text.len > 0 and text[0] == pattern[0] and wildcard(pattern[1 .. ^1], text[1 .. ^1])
 
 proc actsOn(files: seq[string], path: string): bool =
-  let patterns = if files.len == 0: @["*.rs"] else: files
+  let patterns = if files.len == 0: @["*.nim"] else: files
   for pattern in patterns:
     let name = path.extractFilename
     if wildcard(pattern, path) or wildcard(pattern, name):
@@ -113,8 +112,10 @@ proc lintGate(event: JsonNode): int =
     output = run.output
     passed = run.code == 0
   else:
-    let run = execCapture("cargo", @["clippy", "--workspace", "--all-targets",
-                                     "--message-format=short", "--", "-D", "warnings"], cwd, "")
+    let nimFiles = files.filterIt(it.endsWith(".nim"))
+    if nimFiles.len == 0:
+      return 0
+    let run = execCapture("nim", @["check", "--hints:off"] & nimFiles, cwd, "")
     output = run.output
     passed = run.code == 0
   if passed:
@@ -125,17 +126,14 @@ proc lintGate(event: JsonNode): int =
   if project.lintDeclared:
     stderr.writeLine("`" & project.lintCommand & "` reports problems; fix them (the project must stay warning-free):")
   else:
-    stderr.writeLine("cargo clippy reports problems; fix them (the project must stay warning-free):")
+    stderr.writeLine("`nim check` reports problems; fix them (the project must stay warning-free):")
   var printed = 0
   for line in output.splitLines:
     let text = line.strip()
     if text.len == 0:
       continue
     if not project.lintDeclared:
-      let first = text.splitWhitespace[0]
-      if first in ["Compiling", "Checking", "Updating", "Downloading", "Downloaded",
-                   "Locking", "Adding", "Blocking", "Fresh", "Finished"] or
-         text.contains("could not compile"):
+      if text.startsWith("Hint:") or text.startsWith("CC:"):
         continue
     stderr.writeLine(text)
     inc printed
@@ -442,7 +440,7 @@ proc formatCode(event: JsonNode): int =
     discard execCapture("sh", @["-c", project.formatCommand & " \"$@\"", "sh", file],
                         (if root.len > 0: root else: dir), "")
   else:
-    discard execCapture("cargo", @["fmt", "--all"], dir, "")
+    discard execCapture("nimpretty", @[file], dir, "")
   0
 
 proc proseWords(text: string): seq[string] =

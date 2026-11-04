@@ -29,25 +29,25 @@ No dependencies: SHA-256 is vendored in `sha256.nim` and tested against the stan
 | Tool | Modes | Ported |
 | --- | --- | --- |
 | `review-gate` | `check`, `record`, `native` | yes — snapshot, marker, waiver, hook-skip refusal |
-| `lint-gate` | — | yes — declared command or clippy, stamp, diagnostics |
+| `lint-gate` | — | yes — declared command or `nim check`, stamp, diagnostics |
 | `read-hint` | — | yes — size estimate, once per session/file |
 | `workspace-lock` | `check`, `start`, `release` | yes — lock file, liveness, dirty-tree check |
-| `format-code` | — | yes — declared formatter or `cargo fmt` |
-| `language-hint` | — | **no** — needs the language word lists |
+| `format-code` | — | yes — declared formatter or `nimpretty` |
+| `language-hint` | — | yes — word lists, one nudge per turn |
 
-## Parity with the Rust binary (2026-11-04)
+## Parity with the original binary (2026-11-04)
 
 | Test | Result |
 | --- | --- |
 | `check` on the synced project | exit 0; all 41 lock hashes match |
 | Drift / missing managed file | both exit 1 and name the file |
-| Fresh project `sync` | identical file tree, lock lines, settings and hook; Rust `check` exits 0 |
+| Fresh project `sync` | identical file tree, lock lines, settings and hook; the original `check` exits 0 |
 | Settings / hook drift | `cardinal-nim check` names the missing entry or gate |
 | `review-gate check` | 6/6 commands: identical exit code and messages |
 | `review-gate native` | no marker 2, covered 0, unseen file 2, waiver 0 — both |
 | `lint-gate` | failing command 2, passing 0 — both |
 | `read-hint` | identical deny JSON and byte estimate |
-| `workspace-lock` | locks are cross-compatible: Rust lock + Nim check, Nim lock + Rust check both refuse |
+| `workspace-lock` | locks are cross-compatible: original lock + Nim check, Nim lock + original check both refuse |
 | `session-metrics` | identical rows on the mirror: project, models, start, duration, turns, tool calls, tokens, context peak |
 | SHA-256 | empty, `abc`, quick-brown-fox vectors pass |
 
@@ -68,4 +68,4 @@ answer with a "retired" message; `session-metrics` covers the measurement need.
 
 `sync` merges the settings entries and installs the native review hook; the hook prefers
 `./nim/bin/cardinal-nim`, then `cardinal-nim`, then `cardinal`. `session-metrics` produces the same
-rows as Rust; `update` syncs the local source (`harness/`). The Rust tree and binary are gone.
+rows as the original binary; `update` syncs the local source (`harness/`). The original tree and binary are gone.

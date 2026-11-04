@@ -1,6 +1,6 @@
 # TLDR;
 
-One agent harness for many projects. Prompts and their order are the product; four gates and a
+One agent harness for many projects. Prompts and their order are the product; six gates and a
 small CLI keep them honest. No Claude Code and no Rust are needed.
 
 ## 30 seconds
@@ -35,14 +35,16 @@ opencode
 The order that matters: roadmap → issues → priority → plan validated → deliverables (test, code,
 docs, review, commit).
 
-## The four gates
+## The gates
 
 | Gate | Refuses |
 | --- | --- |
 | review | a commit without a review or your waiver (`just waive-review`) |
-| lint | ending a turn while the lint fails (one nudge) |
-| read | a whole read of a large file once per session |
 | lock | two live sessions in one worktree |
+| read | a whole read of a large file once per session |
+| format | an edited file left unformatted |
+| lint | ending a turn while the lint fails (one nudge) |
+| language | a reply not in the user's language (one nudge) |
 
 ## More
 

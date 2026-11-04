@@ -1,5 +1,5 @@
 ## `session-metrics`: one TSV row per session from the mirrored transcripts.
-## The header matches the Rust reader; fields with no neutral source (versions,
+## The header matches the original reader; fields with no neutral source (versions,
 ## advisors, validations) stay empty.
 
 import std/[algorithm, json, os, sets, strutils, tables, times]

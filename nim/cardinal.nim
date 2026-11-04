@@ -1,6 +1,6 @@
 ## Cardinal in Nim — phase 1: sync and check.
 ##
-## The contract is the one the Rust binary established: `source/files/` is
+## The contract is the one the original binary established: `source/files/` is
 ## managed, `source/seed/` is copied once, `.claude/cardinal.lock` holds the
 ## SHA-256 of each managed file and the managed settings entries (preserved
 ## verbatim here until the entries port lands).

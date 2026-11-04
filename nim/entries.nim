@@ -27,10 +27,7 @@ type
 
 const HookScript = """#!/bin/sh
 # harness: native review gate (installed by `cardinal sync`, do not edit)
-legacy=.claude/hooks/require_code_review.rs
-if [ -f "$legacy" ] && command -v rust-script >/dev/null 2>&1; then
-    rust-script "$legacy" native || exit $?
-elif [ ! -f "$legacy" ] && [ -f .claude/cardinal.toml ]; then
+if [ -f .claude/cardinal.toml ]; then
     bin=
     if [ -x ./nim/bin/cardinal-nim ]; then
         bin=./nim/bin/cardinal-nim

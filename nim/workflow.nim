@@ -445,8 +445,7 @@ proc specCoverage*(root: string; args: seq[string]): int =
     if path.contains("/.git/") or path.contains("/harness/") or path.contains("/nim/bin/"):
       continue
     let name = path.extractFilename
-    let isTest = name.endsWith("_test.nim") or name.endsWith("_test.rs") or
-                 path.contains("/tests/")
+    let isTest = name.endsWith("_test.nim") or path.contains("/tests/")
     if not isTest:
       continue
     var text = ""

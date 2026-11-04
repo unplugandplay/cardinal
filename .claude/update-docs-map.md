@@ -5,4 +5,4 @@ Read by `skill:update-docs`. Owned by the project: one row per kind of change, w
 | Change | Update |
 |---|---|
 | New or changed command, flag or option | `README.md`, `CLAUDE.md` |
-| New crate or module | `CLAUDE.md`, `docs/architecture.md`, `commit_scopes` in `.claude/cardinal.toml` |
+| New module or component | `CLAUDE.md`, `docs/architecture.md`, `commit_scopes` in `.claude/cardinal.toml` |
