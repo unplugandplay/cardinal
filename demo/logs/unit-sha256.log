@@ -1,0 +1,3 @@
+$ sh -c cd '<repo>' && nim c -r --hints:off -o:nim/bin/sha256_test nim/sha256_test.nim
+sha256 ok
+exit=0

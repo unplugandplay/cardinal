@@ -1,0 +1,11 @@
+[cardinal]
+source = "../../harness"
+
+[project]
+# The demo project is one Nim file.
+lint_command = "nim check hello.nim"
+lint_files = ["*.nim"]
+# A formatter that leaves a trace, so the hook can be asserted.
+format_command = "sh -c 'touch formatted.log'"
+format_files = ["*.nim"]
+user_language = "English"

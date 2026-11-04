@@ -1,0 +1,4 @@
+$ <repo>/nim/bin/cardinal-nim run review-gate check < <tmp>/fixtures/review-bad.json
+Refused: --no-verify or -n skips the native pre-commit review hook that `cardinal sync` installs.
+Commit without it, or ask the user to waive the review.
+exit=2

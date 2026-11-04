@@ -1,0 +1,2 @@
+$ <repo>/nim/bin/cardinal-nim run commit-check < <tmp>/good-msg
+exit=0

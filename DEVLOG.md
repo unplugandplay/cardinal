@@ -2,6 +2,17 @@
 
 Decisions, evidence and dead ends, newest first. One entry per working session.
 
+## 2026-11-04 — end-to-end demo and TLDR
+
+| Item | Result |
+| --- | --- |
+| `demo/hello-world` | two files: `hello.nim` and the harness config |
+| `demo/run.sh` | copies it to a temp dir, syncs, runs every gate and helper, asserts 43 outcomes |
+| Last run | **43 passed, 0 failed** |
+| Logs | `demo/logs/`, sanitized (`<repo>`, `<tmp>`, `~`) |
+| `TLDR;` | one-page quick start, model, gates, links |
+| CI | the demo runs on every push and pull request |
+
 ## 2026-11-04 — Nim phase 5c: workflow helpers
 
 | Tool | Verified |

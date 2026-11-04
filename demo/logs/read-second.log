@@ -1,0 +1,2 @@
+$ <repo>/nim/bin/cardinal-nim run read-hint < <tmp>/fixtures/read.json
+exit=0

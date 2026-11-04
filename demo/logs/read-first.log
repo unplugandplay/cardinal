@@ -1,0 +1,3 @@
+$ <repo>/nim/bin/cardinal-nim run read-hint < <tmp>/fixtures/read.json
+{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"A whole read of this file returns about 38700 bytes: read the range you need (`offset` and `limit`) or search it with `Grep`; if you need it whole, repeat the same call, which then goes through."}}
+exit=0

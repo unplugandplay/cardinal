@@ -1,0 +1,2 @@
+$ <repo>/nim/bin/cardinal-nim run language-hint < <tmp>/fixtures/language-en.json
+exit=0

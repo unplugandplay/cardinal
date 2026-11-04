@@ -1,0 +1,2 @@
+$ sh -c cd '<tmp>/hello-world' && '<repo>/nim/bin/cardinal-nim' check
+exit=0

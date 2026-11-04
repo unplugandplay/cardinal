@@ -1,0 +1,3 @@
+$ <repo>/nim/bin/cardinal-nim run lint-gate < <tmp>/fixtures/idle.json
+`false` reports problems; fix them (the project must stay warning-free):
+exit=2

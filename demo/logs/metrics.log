@@ -1,0 +1,4 @@
+$ <repo>/nim/bin/cardinal-nim run session-metrics <tmp>/fixtures/projects
+session	project	issues	revision	models	versions	start	duration_s	turns	tool_calls	input_tokens	output_tokens	thinking_tokens	cache_read_tokens	cache_creation_tokens	main_context_peak	advisor_models	advisor_calls	advisor_input_tokens	advisor_output_tokens	hook_refusals	skills	validations	other_messages	unreadable_lines	unknown_lines	missing_fields
+ses_demo	hello-world			demo/model		2026-11-04T10:00:00.000Z	1	1	0	10	2	1	3	0	13		0	0	0	0		0	0	0	0	0
+exit=0

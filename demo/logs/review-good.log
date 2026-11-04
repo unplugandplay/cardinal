@@ -1,0 +1,2 @@
+$ <repo>/nim/bin/cardinal-nim run review-gate check < <tmp>/fixtures/review-good.json
+exit=0

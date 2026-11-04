@@ -1,0 +1,34 @@
+$ sh -c cd '<tmp>/hello-world' && git add .claude AGENTS.md CHANGELOG.md ROADMAP.md justfile cardinal-commits.just cardinal-issues.just cardinal-review.just cardinal-specs.just cardinal.just specs .github && git commit -m 'chore: adopt cardinal'
+[master (commit racine) 730efa5] chore: adopt cardinal
+ 30 files changed, 1254 insertions(+)
+ create mode 100644 .claude/.gitignore
+ create mode 100644 .claude/cardinal.lock
+ create mode 100644 .claude/cardinal.toml
+ create mode 100644 .claude/rules/no-ai-attribution.md
+ create mode 100644 .claude/rules/reports-to-the-user.md
+ create mode 100644 .claude/rules/user-language.md
+ create mode 100644 .claude/settings.json
+ create mode 100644 .claude/skills/audit-instructions/SKILL.md
+ create mode 100644 .claude/skills/commit-message/SKILL.md
+ create mode 100644 .claude/skills/commit-message/conventional-commits.md
+ create mode 100644 .claude/skills/create-issue/SKILL.md
+ create mode 100644 .claude/skills/evaluate-harness/SKILL.md
+ create mode 100644 .claude/skills/issue-workflow/SKILL.md
+ create mode 100644 .claude/skills/issue-workflow/details.md
+ create mode 100644 .claude/skills/prioritize-issues/SKILL.md
+ create mode 100644 .claude/skills/update-docs/SKILL.md
+ create mode 100644 .claude/skills/write-spec/SKILL.md
+ create mode 100644 .claude/update-docs-map.md
+ create mode 100644 .github/workflows/cardinal.yml
+ create mode 100644 AGENTS.md
+ create mode 100644 CHANGELOG.md
+ create mode 100644 ROADMAP.md
+ create mode 100644 cardinal-commits.just
+ create mode 100644 cardinal-issues.just
+ create mode 100644 cardinal-review.just
+ create mode 100644 cardinal-specs.just
+ create mode 100644 cardinal.just
+ create mode 100644 justfile
+ create mode 100644 specs/README.md
+ create mode 100644 specs/TEMPLATE.md
+exit=0

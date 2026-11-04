@@ -1,0 +1,3 @@
+$ <repo>/nim/bin/cardinal-nim run language-hint < <tmp>/fixtures/language-fr.json
+Your last reply is not in English, the user_language of .claude/cardinal.toml (or of .claude/cardinal.local.toml, which overrides it): give it again in English.
+exit=2

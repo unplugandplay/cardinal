@@ -1,0 +1,1 @@
+Refused: another live session (demo-a) works in this worktree; two sessions would share its files, index and review marker. Stop and let the user open another worktree or end that session.

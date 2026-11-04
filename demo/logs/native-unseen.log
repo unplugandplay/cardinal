@@ -1,0 +1,2 @@
+Refused: the diff holds files the last code review never saw.
+Run /code-review low on the current diff with the Skill tool, fix what it finds, then commit.

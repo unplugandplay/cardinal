@@ -1,0 +1,4 @@
+$ <repo>/nim/bin/cardinal-nim run commit-check < <tmp>/bad-msg
+subject is not `<type>(<scope>): <description>`
+AI attribution in the message
+exit=1

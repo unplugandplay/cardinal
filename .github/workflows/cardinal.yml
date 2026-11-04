@@ -24,6 +24,8 @@ jobs:
         run: nim/bin/cardinal-nim check
       - name: Check the specs
         run: nim/bin/cardinal-nim run check-specs
+      - name: End-to-end demo
+        run: sh demo/run.sh
 
   commits:
     name: commit messages

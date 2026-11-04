@@ -1,0 +1,2 @@
+$ <repo>/nim/bin/cardinal-nim run format-code < <tmp>/fixtures/format.json
+exit=0

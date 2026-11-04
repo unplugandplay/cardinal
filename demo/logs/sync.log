@@ -1,0 +1,46 @@
+$ sh -c cd '<tmp>/hello-world' && '<repo>/nim/bin/cardinal-nim' sync
+added: cardinal-specs.just
+added: cardinal-review.just
+added: cardinal.just
+added: AGENTS.md
+added: cardinal-issues.just
+added: cardinal-commits.just
+added: .github/workflows/cardinal.yml
+added: .claude/.gitignore
+added: .claude/skills/commit-message/conventional-commits.md
+added: .claude/skills/commit-message/SKILL.md
+added: .claude/skills/issue-workflow/details.md
+added: .claude/skills/issue-workflow/SKILL.md
+added: .claude/skills/write-spec/SKILL.md
+added: .claude/skills/evaluate-harness/SKILL.md
+added: .claude/skills/prioritize-issues/SKILL.md
+added: .claude/skills/update-docs/SKILL.md
+added: .claude/skills/create-issue/SKILL.md
+added: .claude/skills/audit-instructions/SKILL.md
+added: .claude/rules/user-language.md
+added: .claude/rules/reports-to-the-user.md
+added: .claude/rules/no-ai-attribution.md
+added: specs/TEMPLATE.md
+added: specs/README.md
+seeded: justfile
+seeded: CHANGELOG.md
+seeded: ROADMAP.md
+seeded: .claude/settings.json
+seeded: .claude/update-docs-map.md
+added: .claude/settings.json allow Bash(cardinal run *)
+added: .claude/settings.json ask Bash(cardinal run release *.*)
+added: .claude/settings.json ask Bash(just release *.*)
+added: .claude/settings.json deny Bash(just waive-review)
+added: .claude/settings.json deny Bash(just waive-review *)
+added: .claude/settings.json deny Edit(//**/claude-review-waived)
+added: .claude/settings.json hook PreToolUse Bash cardinal run review-gate check
+added: .claude/settings.json hook PreToolUse Bash|Edit|Write|NotebookEdit cardinal run workspace-lock check
+added: .claude/settings.json hook PreToolUse Read cardinal run read-hint
+added: .claude/settings.json hook PostToolUse Skill cardinal run review-gate record
+added: .claude/settings.json hook PostToolUse Edit|Write cardinal run format-code
+added: .claude/settings.json hook Stop cardinal run lint-gate
+added: .claude/settings.json hook Stop cardinal run language-hint
+added: .claude/settings.json hook SessionStart cardinal run workspace-lock start
+added: .claude/settings.json hook SessionEnd cardinal run workspace-lock release
+added: native review gate
+exit=0

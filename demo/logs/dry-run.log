@@ -1,0 +1,3 @@
+$ sh -c cd '<tmp>/hello-world' && '<repo>/nim/bin/cardinal-nim' sync --dry-run
+up to date
+exit=0
