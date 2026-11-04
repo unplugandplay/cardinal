@@ -12,13 +12,13 @@ and applies the answer: `0` pass, `2` refusal (the message is shown to the model
 
 | | |
 | --- | --- |
-| Nim CLI | `nim/bin/cardinal-nim` (built with `nim c -d:release -o:nim/bin/cardinal-nim nim/cardinal.nim`), or set `CARDINAL_BIN` |
+| Nim CLI | `nim/bin/cardinal-nim` (built with `nim c -d:release -o:nim/bin/cardinal-nim nim/cardinal.nim`), or `~/.local/bin/cardinal`, or set `CARDINAL_BIN` |
 | git | 2.23+ (any recent git); the adapter prefers `/opt/homebrew/bin/git` when present |
 | Config | `skills: [".claude/skills"]`, `instructions: [".claude/rules/*.md"]` in `opencode.jsonc` |
-| Sync | `cardinal-nim sync` (or the Rust `cardinal`) once, for the managed files |
+| Sync | `cardinal sync` once, for the managed files |
 
 Binary lookup order: `CARDINAL_BIN`, `<project>/nim/bin/cardinal-nim`, `~/.local/bin/cardinal-nim`,
-then `cardinal-nim` on the server's `PATH`.
+`~/.local/bin/cardinal`, then `cardinal-nim` and `cardinal` on the server's `PATH`.
 
 ## Wiring
 

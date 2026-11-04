@@ -19,14 +19,14 @@ opencode            # in this directory: DeepSeek + the Cardinal skills are alre
 | `issues/<name>.md` or "the next issue" | `issue-workflow` drives it to done in validated deliverables |
 | "Create an issue: …" | `create-issue` writes `issues/<name>.md` |
 | "Prioritize the issues" | `prioritize-issues` reviews order and dependencies |
-| `just next-issue` | shows the first ready issue |
+| `just next-issue` | not ported yet — pick `issues/<name>.md` manually |
 
 ## Layout
 
 | Path | Role |
 | --- | --- |
 | `.claude/` | Cardinal's managed files: 8 skills, 3 rules, `cardinal.toml`, `cardinal.lock`, `settings.json` |
-| `cardinal/` | vendored Cardinal source (MIT), so the project needs no separate clone |
+| `harness/` | prompt data (`files/`, `seed/`, `entries/`) and its MIT license; no Rust |
 | `.opencode/plugins/cardinal/` | plain-JS adapter calling the Nim CLI: maps OpenCode hooks onto the gates ([README](.opencode/plugins/cardinal/README.md)) |
 | `nim/` | the Nim CLI: sync/check, the gates, `session-metrics`, `update` |
 | `opencode.jsonc` | skills and instructions sources, waiver denies (no model — see `.env`) |
@@ -65,7 +65,7 @@ opencode            # in this directory: DeepSeek + the Cardinal skills are alre
 | Evaluation | the adapter mirrors each session to `~/.local/share/cardinal/projects/<slug>/<session>.jsonl` |
 
 ```sh
-cardinal-nim run session-metrics ~/.local/share/cardinal/projects
+cardinal run session-metrics ~/.local/share/cardinal/projects
 ```
 
 Remaining gap: the `code-review` skill is not part of Cardinal's 8 skills, so no review marker is
@@ -75,21 +75,22 @@ recorded; the native pre-commit gate still refuses un-reviewed commits.
 
 | Tool | Install |
 | --- | --- |
-| Nim CLI | `nim c -d:release --hints:off -o:nim/bin/cardinal-nim nim/cardinal.nim`, then `install -m 755 nim/bin/cardinal-nim ~/.local/bin/cardinal-nim` |
+| Nim CLI | `nim c -d:release --hints:off -o:nim/bin/cardinal-nim nim/cardinal.nim`, then `install -m 755 nim/bin/cardinal-nim ~/.local/bin/cardinal` |
 | `just` | `brew install just` |
 | git | 2.23+ (portable `rev-parse`; tested on 2.23 and 2.56) |
 | OpenCode | 2.2.4+ with a signed-in provider of your choice |
 
-No Rust is needed: `sync`, `check`, the gates, `session-metrics`, `update`, the review hook and CI
-all run the Nim CLI. The vendored `cardinal/` tree still holds the Rust crates as reference and the
-prompt source (`files/`, `seed/`, `entries/`) until the Phase 5 restructure.
+No Rust is left: `sync`, `check`, the gates, `session-metrics`, `update`, the review hook and CI
+all run the Nim CLI. Unported helpers (`next-issue`, `close-issue`, `check-issue`, `check-specs`,
+`check-commits`, `release`, `worktree`, the legacy readers) answer with a clear "not ported" and
+exit 3; use the files manually until they land.
 
 Remote: `https://github.com/unplugandplay/cardinal` — `main` is the default branch.
 
 ## License
 
-MIT — see [LICENSE](LICENSE). The vendored source under `cardinal/` is MIT, Copyright
-(c) Electron-libre contributors; see [cardinal/LICENSE](cardinal/LICENSE).
+MIT — see [LICENSE](LICENSE). The harness files under `harness/` derive from Cardinal, MIT,
+Copyright (c) Electron-libre contributors; see [harness/LICENSE](harness/LICENSE).
 
 Note: Cardinal itself never calls a model — the harness does. The CLI only synchronises files and
 runs gates; the model is chosen in `.env` and pinned by the adapter.

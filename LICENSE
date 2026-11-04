@@ -20,6 +20,5 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-The vendored Cardinal source under `cardinal/` is Copyright (c) Electron-libre
-contributors and is distributed under the MIT License declared in
-`cardinal/Cargo.toml`; see `cardinal/LICENSE`.
+The harness files under `harness/` derive from Cardinal, Copyright (c) Electron-libre
+contributors, and are distributed under the MIT License; see `harness/LICENSE`.

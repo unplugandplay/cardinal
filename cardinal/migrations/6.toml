@@ -1,9 +1,0 @@
-# The format 6 orders the issues by the `priority` and `depends_on` of each issue file instead of its `rank` (ADR 0021).
-names = [
-  { old = "rank:", new = "`priority:` and `depends_on:` (run `skill:prioritize-issues` once to convert the ranks)" },
-  { old = "start-issue", new = "`open-worktree <name>` (no issue file, the worktree next to the main one, ADR 0023)" },
-  { old = "finish-issue", new = "`close-worktree <name|path>` (ADR 0023)" },
-]
-rewrite = [
-  { path = "ROADMAP.md", old = "A milestone becomes issues once it is shaped (`skill:create-issue`); the `rank` of each issue file orders them (`just next-issue`).", new = "A milestone becomes issues once it is shaped (`skill:create-issue`); the `priority` and `depends_on` of each issue file order them within a milestone (`just next-issue`)." },
-]

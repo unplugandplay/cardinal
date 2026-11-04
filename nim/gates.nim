@@ -164,12 +164,26 @@ proc refuseReview(why: string): int =
   2
 
 proc skipsHooks(command: string): bool =
-  if not command.contains("git") or not command.contains("commit"):
+  let at = command.find("git commit")
+  if at < 0:
     return false
-  if command.contains("--no-verify"):
+  var rest = command[at + "git commit".len .. ^1]
+  for stop in [";", "&&", "||", "|", "\n"]:
+    let cut = rest.find(stop)
+    if cut >= 0:
+      rest = rest[0 ..< cut]
+  if rest.contains("--no-verify"):
     return true
-  for token in command.splitWhitespace:
-    if token.len > 1 and token[0] == '-' and not token.startsWith("--") and token.contains('n'):
+  for token in rest.splitWhitespace:
+    if token.len < 2 or token[0] != '-' or token.startsWith("--"):
+      continue
+    if token.contains(':') or token.contains('='):
+      continue
+    var letters = true
+    for letter in token[1 .. ^1]:
+      if not letter.isAlphaAscii:
+        letters = false
+    if letters and token.contains('n'):
       return true
   false
 
@@ -549,5 +563,15 @@ proc runTool*(root, tool: string; args: seq[string]; input: string): int =
   of "language-hint": languageHint(event)
   of "session-metrics": runSessionMetrics(args)
   else:
-    stderr.writeLine("cardinal-nim: unknown tool " & tool)
+    const NotPorted = [
+      "audit-sources", "cardinal-changes", "cardinal-report", "check-commits",
+      "check-issue", "check-specs", "close-issue", "commit-check",
+      "deliverable-size", "delivered-quality", "fixed-context", "issue-claim",
+      "next-issue", "release", "review-target", "rule-breaches",
+      "spec-coverage", "upgrade", "worktree",
+    ]
+    if tool in NotPorted:
+      stderr.writeLine("cardinal: '" & tool & "' is not ported to Nim yet; do it manually or see README")
+    else:
+      stderr.writeLine("cardinal: unknown tool " & tool)
     3

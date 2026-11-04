@@ -4,7 +4,7 @@ import 'cardinal.just'
 default:
     @just --list
 
-# Format, lint and test the project, then check the specs (when the feature `specs` is on). Add the first three, the
-# project's own, quiet on success, above the last line: the agent reads all of their output.
+# Format, lint and test the project. Add the project's own commands here, quiet on success: the agent reads their
+# output. No project checks are configured yet.
 check:
-    @if [ -f cardinal-specs.just ]; then "{{just_executable()}}" check-specs; fi
+    @echo "no project checks configured"

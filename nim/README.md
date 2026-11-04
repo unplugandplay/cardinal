@@ -1,12 +1,13 @@
-# Cardinal in Nim — phases 1–2
+# Cardinal in Nim
 
-`sync`/`check` and the gates, with the same layout, lock format, stdin contract and exit codes
-(0 pass, 2 refusal, 3 tool/usage error).
+The harness CLI: `sync`/`check`, the gates, `session-metrics` and `update`, with the same layout,
+lock format, stdin contract and exit codes (0 pass, 2 refusal, 3 tool/usage error).
 
 ## Build and test
 
 ```sh
 nim c -d:release --hints:off -o:nim/bin/cardinal-nim nim/cardinal.nim
+install -m 755 nim/bin/cardinal-nim ~/.local/bin/cardinal
 nim c -r --hints:off -o:nim/bin/sha256_test nim/sha256_test.nim
 ```
 
@@ -52,13 +53,15 @@ No dependencies: SHA-256 is vendored in `sha256.nim` and tested against the stan
 
 ## Not yet in Nim
 
-| Gap | Phase |
+| Gap | State |
 | --- | --- |
-| migrations, feature switching | 2b |
-| git-URL `update` (fetch/clone) | 2b |
-| legacy measurement readers (`rule-breaches`, `delivered-quality`, `cardinal-report`, `cardinal-changes`, `audit-sources`, `fixed-context`) | optional |
+| issue queue (`next-issue`, `close-issue`, `check-issue`) | stub: exit 3 with a clear message; pick files manually |
+| specs (`check-specs`, `spec-coverage`) | stub |
+| commits (`check-commits`, `commit-check`) | stub |
+| `release`, `worktree`, `deliverable-size`, `review-target` | stub |
+| legacy readers (`rule-breaches`, `delivered-quality`, `cardinal-report`, `cardinal-changes`, `audit-sources`, `fixed-context`) | stub |
+| migrations, feature switching, git-URL `update` | not implemented |
 
-`sync` now merges the settings entries and installs the native review hook; the hook prefers
-`./nim/bin/cardinal-nim`, then `cardinal-nim`, then `cardinal`, so no Rust is needed. `session-metrics`
-produces the same rows as Rust; `update` syncs the local source. Remaining: the Rust source tree
-(prompt data + crates) and the legacy measurement readers.
+`sync` merges the settings entries and installs the native review hook; the hook prefers
+`./nim/bin/cardinal-nim`, then `cardinal-nim`, then `cardinal`. `session-metrics` produces the same
+rows as Rust; `update` syncs the local source (`harness/`). The Rust tree and binary are gone.

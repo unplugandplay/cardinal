@@ -2,6 +2,19 @@
 
 Decisions, evidence and dead ends, newest first. One entry per working session.
 
+## 2026-11-04 — Nim phase 5b: Rust removed
+
+| Change | Detail |
+| --- | --- |
+| Prompt data | `files/`, `seed/`, `entries/` and the license moved to `harness/`; `cardinal.toml` source now `harness` |
+| Rust tree | `cardinal/` deleted: 421 files, ~670 MB with build output; no `.rs` or `Cargo.*` remains |
+| CLI name | the Nim binary installs as `cardinal` (`~/.local/bin/cardinal`); recipes and skills call it unchanged |
+| Unported tools | `next-issue`, `close-issue`, `check-issue`, `check-specs`, `check-commits`, `release`, `worktree`, legacy readers → clear "not ported" message, exit 3 |
+| `justfile` | `check` no longer calls the unported specs recipe |
+| License | root `LICENSE` and `harness/LICENSE` attribute the harness data to Electron-libre |
+| Check | `cardinal check` exit 0 after the move and delete; lock file unchanged |
+| Bug fixed | `skipsHooks` no longer mistakes `-o:nim` for a short flag containing `n` |
+
 ## 2026-11-04 — Nim phase 5a: hook, CI, Rust binary removed
 
 | Change | Detail |

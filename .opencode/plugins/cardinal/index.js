@@ -48,6 +48,9 @@ function cardinalBinary(directory) {
     process.env.CARDINAL_BIN,
     join(directory, "nim", "bin", "cardinal-nim"),
     join(homedir(), ".local", "bin", "cardinal-nim"),
+    join(homedir(), ".local", "bin", "cardinal"),
+    "cardinal-nim",
+    "cardinal",
   ].filter(Boolean)
   for (const candidate of candidates) {
     if (existsSync(candidate)) return candidate

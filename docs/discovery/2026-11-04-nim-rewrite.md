@@ -25,14 +25,11 @@ survives with four gates, not with prose alone.
 ## Target shape
 
 ```text
-prompts/            skills/*.md, rules/*.md, order: roadmap -> issues -> plan -> deliverables
-bin/cardinal        one Nim binary (no runtime)
-  sync | check      copy managed files, SHA-256 manifest
-  gate review       review marker vs staged diff hash
-  gate lint         run the project's lint
-  gate read         size check, per-session memory
-  gate lock         worktree lock with heartbeat
-  mirror            write a neutral JSONL transcript
+harness/            files/ seed/ entries/ + LICENSE: prompts, seeds and managed settings data
+nim/                one binary (no runtime)
+  sync | check      copy managed files, SHA-256 manifest, settings entries, review hook
+  update            sync the local source
+  run review|lint|read|lock|language|format|session-metrics
 .env                OPENCODE_MODEL=<provider>/<model>
 .opencode/plugins/cardinal/index.js   plain JS shim, no build, no deps
 ```
@@ -42,24 +39,25 @@ Two structural simplifications:
 | Now | After |
 | --- | --- |
 | Claude hook event (`tool_name`, `tool_input`, `session_id`, exit 2) | one neutral JSON: `{action, input, session, cwd}`; exits are the only contract |
-| `.claude/settings.json` merging, `CLAUDE_PID`, `CLAUDE_PROJECT_DIR`, `CLAUDE_CONFIG_DIR` | gone; the adapter passes `session` and `cwd`, the CLI owns everything else |
+| `.claude/settings.json` merging | ported to `entries.nim`; the lock keeps its 15 `entry` lines |
 | git `--path-format` | absolute paths computed in Nim (`getCurrentDir()` + `absolutePath`) |
 | 14.7k Rust + 21.7k test lines + TS plugin | target ~2–3k Nim + ~150 JS, tests in Nim |
 | transcript readers tied to Claude JSONL | neutral mirror under `$XDG_DATA_HOME/cardinal/projects` |
 
 ## Port map
 
-| Rust module (lines) | Nim |
+| Nim file | Role |
 | --- | --- |
-| `lib.rs` sync/check/hash (1.3k) | `sync.nim`, `manifest.nim` |
-| `gate.rs`, `entries.rs`, `settings.rs` (0.9k) | drop settings merging; `gate.nim` |
-| `tools/review_gate.rs` (0.7k) | `gates/review.nim` |
-| `tools/lint_gate.rs` (0.3k), `format_code.rs` (0.2k) | `gates/lint.nim`, `gates/format.nim` |
-| `tools/read_hint.rs` (0.2k), `language_hint.rs` (0.1k) | `gates/read.nim`, `gates/language.nim` |
-| `tools/workspace_lock.rs` (0.4k) | `gates/lock.nim` (heartbeat file, not PID liveness) |
-| `tools/next_issue.rs`, `close_issue.rs`, `issue_claim.rs` (1.5k) | `issues.nim` (or `just` recipes) |
-| transcript readers (4.5k) | `mirror.nim` only for v1; metrics later |
-| `release.rs`, `worktree.rs`, `check_specs.rs` (1.7k) | keep only if the philosophy needs them; recipes otherwise |
+| `cardinal.nim` | CLI: `sync`, `check`, `update`, `run` |
+| `config.nim` | the TOML keys the harness reads |
+| `entries.nim` | settings entries, lock lines, review hook |
+| `gates.nim` | review, lint, read, lock, language, format, dispatch |
+| `metrics.nim` | `session-metrics` |
+| `shell.nim` | process and git helpers |
+| `sha256.nim` | vendored hash |
+
+The Rust modules not ported (issue queue, release, worktree, specs, commits, legacy readers)
+answer with a "not ported" message and exit 3.
 
 ## Phases
 
@@ -69,10 +67,10 @@ Two structural simplifications:
 | 2 | Nim gates: review, lint, read, lock | **done 2026-11-04** — parity table in `nim/README.md` |
 | 3 | Plain-JS adapter calling the Nim CLI | **done 2026-11-04** — `index.js`, neutral events, `language-hint` ported |
 | 2b | Sync completeness | **done 2026-11-04** — entries merged, review hook installed, Rust `check` accepts the result |
-| 4 | Port issue queue / release or replace with recipes | **done 2026-11-04** for metrics + update; issue queue/release remain recipes |
-| 5 | Remove Rust and TypeScript from the tree | **in progress** — hook, CI and installed binary on Nim; Rust source tree still vendored |
+| 4 | Metrics and update | **done 2026-11-04** — identical `session-metrics` rows; local `update` |
+| 5 | Remove Rust and TypeScript from the tree | **done 2026-11-04** — prompts in `harness/`, Rust tree and binary deleted, CLI installed as `cardinal` |
 
-The Rust binary is gone; the Rust source tree stays as reference until the Phase 5 restructure.
+Unported helpers stub with exit 3; the daily loop (prompts, gates, sync, metrics) is Nim.
 Effort: 3–4 weeks including parity tests; phases 1–2 are the
 bulk.
 
