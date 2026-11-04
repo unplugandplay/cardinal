@@ -48,17 +48,27 @@ opencode            # in this directory: DeepSeek + the Cardinal skills are alre
 | Gate | Hook | Refuses |
 | --- | --- | --- |
 | review gate | native git `pre-commit` + `permission.evaluate` | a commit without a code review; `--no-verify`; `git add` of every file |
+| workspace lock | `permission.evaluate` + session events | a second live session in the same worktree |
 | read hint | `permission.evaluate` | a whole read of a large file once per file and session |
 | format | `tool.execute.after` | leaves the edited file unformatted |
 | lint gate | `session.idle` | ending a turn while the project's lint fails (one nudge per turn) |
+| language hint | `session.idle` | a reply not in `user_language` (one nudge per turn) |
 
-## Known gaps
+## No Claude Code needed
 
-| Gap | Cause |
+| Piece | How it works without Claude |
 | --- | --- |
-| `workspace-lock` disabled | needs `CLAUDE_PID`; OpenCode sessions share the server process |
-| `language-hint` + evaluation | read Claude Code transcripts; OpenCode stores sessions elsewhere |
-| `code-review` skill absent | the review marker needs that skill; the native pre-commit gate still blocks un-reviewed commits |
+| Hook protocol | the adapter builds the Claude-shaped event itself; `cardinal` never invokes `claude` |
+| `workspace-lock` | the adapter owns one sleeper process per session and passes its PID, so liveness works |
+| `language-hint` | the adapter passes `last_assistant_message` from OpenCode's session context |
+| Evaluation | the adapter mirrors each session to `~/.local/share/cardinal/projects/<slug>/<session>.jsonl` |
+
+```sh
+cardinal run session-metrics ~/.local/share/cardinal/projects
+```
+
+Remaining gap: the `code-review` skill is not part of Cardinal's 8 skills, so no review marker is
+recorded; the native pre-commit gate still refuses un-reviewed commits.
 
 ## Requirements
 
@@ -66,6 +76,7 @@ opencode            # in this directory: DeepSeek + the Cardinal skills are alre
 | --- | --- |
 | `cardinal` | `cargo install --force --path cardinal/crates/cardinal --locked` |
 | `just` | `brew install just` |
+| git | 2.31+ (Cardinal uses `--path-format`); the adapter prefers `/opt/homebrew/bin/git` |
 | OpenCode | 2.2.4+ with a signed-in provider of your choice |
 
 Remote: `https://github.com/unplugandplay/cardinal` — `main` is the default branch.

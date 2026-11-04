@@ -2,6 +2,19 @@
 
 Decisions, evidence and dead ends, newest first. One entry per working session.
 
+## 2026-11-04 — Claude-free bridges
+
+| Bridge | Implementation | Verified |
+| --- | --- | --- |
+| `workspace-lock` | one sleeper `sh` process per OpenCode session supplies `CLAUDE_PID`; taken on session create, released on delete | two live sessions in one worktree: second refused with exit 2 |
+| `language-hint` | the adapter passes `last_assistant_message` from OpenCode's context; no transcript read | French reply → exit 2 with the hint; short text and retry → 0 |
+| Evaluation | sessions mirrored to `~/.local/share/cardinal/projects/<slug>/<session>.jsonl` with ids, models and real tokens | `session-metrics` shows turns=1, input=232, output=4, cache=7168 |
+| git | Homebrew git 2.56 installed; Cardinal needs `--path-format` (git ≥ 2.31), the adapter prepends `/opt/homebrew/bin` | `workspace-lock` and the waiver recipe no longer dead on git 2.23 |
+
+Remaining: the `code-review` skill is absent, so no review marker is recorded; the native
+pre-commit gate still refuses un-reviewed commits. `opencode run` ends on a shell denial instead of
+handing the reason back; the TUI continues.
+
 ## 2026-11-04 — first push
 
 | Item | Detail |
